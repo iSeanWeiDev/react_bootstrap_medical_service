@@ -1,5 +1,5 @@
 import React from 'react';
-import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
+import { BrowserRouter as Router, Switch, Route, Redirect } from "react-router-dom";
 import { ThemeProvider } from "@material-ui/styles";
 
 import { MainLayout } from "./layouts";
@@ -13,9 +13,10 @@ import Contact from "./pages/Contact";
 import Profile from './pages/Profile';
 import Screening from './pages/Screening';
 import Result from './pages/Result';
+import Login from './pages/Login';
+import Signup from './pages/Signup';
 
-const renderWithLayout = (Component, Layout) => <Layout>{Component}</Layout>;
-
+const renderWithLayout = (Component, Layout) => <Layout isAuthenticated={localStorage.getItem("jwt")}>{Component}</Layout>;
 const App = ({ history }) => (
   <ThemeProvider theme={theme}>
     <Router history={history}>
@@ -23,39 +24,49 @@ const App = ({ history }) => (
         <Route
           path="/"
           exact
-          render={() => renderWithLayout(<Startup />, MainLayout)}
+          render={() => renderWithLayout(<Startup isAuthenticated={localStorage.getItem("jwt")} />, MainLayout)}
         />
         <Route
+          path="/login"
+          exact
+          render={() => renderWithLayout(<Login />, MainLayout)}
+        />
+        <Route
+          path="/signup"
+          exact
+          render={() => renderWithLayout(<Signup />, MainLayout)}
+        />
+        <PrivateRoute
           path="/home"
           exact
           render={() => renderWithLayout(<Home />, MainLayout)}
         />
-        <Route
+        <PrivateRoute
           path="/about"
           exact
           render={() => renderWithLayout(<About />, MainLayout)}
         />
-        <Route
+        <PrivateRoute
           path="/solutions"
           exact
           render={() => renderWithLayout(<Solutions />, MainLayout)}
         />
-        <Route
+        <PrivateRoute
           path="/contact"
           exact
           render={() => renderWithLayout(<Contact />, MainLayout)}
         />
-        <Route
+        <PrivateRoute
           path="/profile"
           exact
           render={() => renderWithLayout(<Profile />, MainLayout)}
         />
-        <Route
+        <PrivateRoute
           path="/screening"
           exact
           render={() => renderWithLayout(<Screening />, MainLayout)}
         />
-        <Route
+        <PrivateRoute
           path="/result"
           exact
           render={() => renderWithLayout(<Result />, MainLayout)}
@@ -65,5 +76,17 @@ const App = ({ history }) => (
     </Router>
   </ThemeProvider>
 )
+
+const PrivateRoute = (rest) => {
+  const isAuthenticated = localStorage.getItem("jwt");
+    if(isAuthenticated) {
+      return (<Route {...rest} />) 
+    } else {
+      return (<Redirect to={{
+        pathname: '/',
+        state: { from: rest.location }
+      }} />)
+    }
+}
 
 export default App;

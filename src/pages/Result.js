@@ -43,7 +43,7 @@ function Result({
                 <p>Please continue with your usual treatment plan and check your symptoms to access your current health.</p>
                 <img src="/assets/imgs/health.png" alt="health" />
                 <div className={classes.footer}>
-                    <Button title="Complete" onPress={()=>history.push("/")}/>
+                    <Button title="Complete" onPress={()=>history.push("/")} authButton={false} />
                 </div>
             </div>
         </div>

@@ -60,9 +60,6 @@ const theme = createMuiTheme({
       input: {
         padding: "19px 15px 17px"
       },
-      inputSelect: {
-        padding: "16px 32px 15px 15px"
-      },
       notchedOutline: {
         borderColor: "rgba(42,53,60,0.3)"
       }

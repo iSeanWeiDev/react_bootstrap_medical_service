@@ -9,6 +9,10 @@ import {
 } from "@material-ui/core";
 import { withRouter } from "react-router";
 import AccountCircleIcon from '@material-ui/icons/AccountCircle';
+import IconButton from '@material-ui/core/IconButton';
+import AccountCircle from '@material-ui/icons/AccountCircle';
+import MenuItem from '@material-ui/core/MenuItem';
+import Menu from '@material-ui/core/Menu';
 
 const useStyles = makeStyles(theme => ({
   grow: {
@@ -69,12 +73,20 @@ const useStyles = makeStyles(theme => ({
   },
   accountSpan: {
     float: "right",
-    padding: "10px"
+    fontSize: "14px",
+    fontWeight: "900",
+    width: "150px",
+    textAlign: "right"
+  },
+  iconButton: {
+    color: "#dfe6ed",
+    fontSize: "40px",
+    cursor: "pointer",
+    float: "right"
   },
   accountIcon: {
     color: "#dfe6ed",
     fontSize: "40px",
-    cursor: "pointer"
   }
 }));
 
@@ -85,9 +97,38 @@ const StyledToolbar = withStyles(theme => ({
 }))(Toolbar);
 
 function Appbar({
+  isAuthenticated,
   history
 }) {
   const classes = useStyles();
+  const [anchorEl, setAnchorEl] = React.useState(null);
+  const open = Boolean(anchorEl);
+
+  const handleMenu = event => {
+    if(isAuthenticated) {
+      setAnchorEl(event.currentTarget);
+    } else {
+      history.push("/login")
+    }
+  };
+
+  const handleClose = () => {
+    setAnchorEl(null);
+  }
+
+  const goToProfile = () => {
+    setAnchorEl(null);
+    history.push("/profile");
+    console.log()
+  };
+
+  const Logout = () => {
+    setAnchorEl(null);
+    localStorage.removeItem("jwt");
+    localStorage.removeItem("username");
+    history.push("/")
+  };
+
   return (
     <div className={classes.grow}>
       <AppBar position="fixed" className={clsx(classes.appBar)}>
@@ -102,10 +143,37 @@ function Appbar({
           </div>
           <div className={classes.sectionDesktop}>
             <div className={classes.accountContainer}>
-              <span className={classes.accountSpan}>
-                Sign In or Sign Up
-              </span>
-              <AccountCircleIcon className={classes.accountIcon} onClick={()=>history.push("/profile")} />
+                <span className={classes.accountSpan}>
+                  {isAuthenticated ? localStorage.getItem("username") : "Sign In or Sign Up"}
+                </span>
+                <IconButton
+                  aria-label="account of current user"
+                  aria-controls="menu-appbar"
+                  aria-haspopup="true"
+                  className={classes.iconButton}
+                  onClick={handleMenu}
+                  color="inherit"
+                >
+                  <AccountCircle className={classes.accountIcon} />
+                </IconButton>
+                <Menu
+                  id="menu-appbar"
+                  anchorEl={anchorEl}
+                  anchorOrigin={{
+                    vertical: 'top',
+                    horizontal: 'right',
+                  }}
+                  keepMounted
+                  transformOrigin={{
+                    vertical: 'top',
+                    horizontal: 'right',
+                  }}
+                  open={open}
+                  onClose={handleClose}
+                >
+                  <MenuItem onClick={goToProfile}>Profile</MenuItem>
+                  <MenuItem onClick={Logout}>Logout</MenuItem>
+                </Menu>
             </div>
           </div>
         </StyledToolbar>

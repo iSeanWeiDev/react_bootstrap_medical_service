@@ -24,13 +24,13 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
-const Main = ({ children }) => {
+const Main = ({ children, isAuthenticated }) => {
   const classes = useStyles();
   return (
     <div className={classes.root}>
       <CssBaseline />
       <div className={classes.contentWrapper}>
-        <Appbar />
+        <Appbar isAuthenticated={isAuthenticated} />
         <main className={classes.content}>
           <div className={classes.toolbar} />
           {children}

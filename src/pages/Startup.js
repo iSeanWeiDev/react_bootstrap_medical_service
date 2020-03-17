@@ -21,6 +21,7 @@ const useStyles = makeStyles(theme => ({
     }
 }));
 function Startup({
+    isAuthenticated,
     history
 }) {
     const classes = useStyles();
@@ -37,7 +38,7 @@ function Startup({
                         <h1>Rapidly pre-screen for COVID-19</h1>
                         <h1>AI powered respiratory symptom assessments</h1>
                         <p>Obtain a pre-screening assessment and check your symptoms with a few simple questions</p>
-                        <Button title="Get Started" onPress={()=>history.push("/home")} />
+                        <Button title="Get Started" onPress={()=>isAuthenticated ? history.push("/home") : history.push("/login")} authButton={false} />
                     </div>
                 </Grid>
             </Grid>

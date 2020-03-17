@@ -53,10 +53,10 @@ function Home({
                     <h2>How can we help you today?</h2>
                     <Grid container className={classes.root} spacing={1}>
                         <Grid item xs={6}>
-                            <Button title="COVID-19 Prescreening" />
+                            <Button title="COVID-19 Prescreening" authButton={false} />
                         </Grid>
                         <Grid item xs={6}>
-                            <Button title="Check My Symptoms" onPress={()=>history.push("/screening")} />
+                            <Button title="Check My Symptoms" onPress={()=>history.push("/screening")} authButton={false} />
                         </Grid>
                     </Grid>
                 </Grid>
