@@ -4,6 +4,7 @@ import HelpIcon from '@material-ui/icons/Help';
 import { Checkbox, Radio, InputLabel, MenuItem, FormControl, Select } from '@material-ui/core';
 import ArrowForwardIcon from '@material-ui/icons/ArrowForward';
 import ArrowBackIcon from '@material-ui/icons/ArrowBack';
+import Tooltip from '@material-ui/core/Tooltip';
 import { withRouter } from 'react-router-dom';
 
 const useStyles = makeStyles(theme => ({
@@ -47,8 +48,8 @@ const QAComp = ({
     history
 }) => {
     const classes = useStyles();
+    const tooltipText = `help text`;
     const [answer, setAnswer] = useState("");
-    console.log(questions)
     const handleChange = (event) => {
         setAnswer(event.target.value);
     }
@@ -106,7 +107,7 @@ const QAComp = ({
     }
     return (
         <div className={classes.container}>
-            <h2>Select any symptoms that you are worse than usual: <HelpIcon className={classes.helpIcon} /></h2>
+            <h2>Select any symptoms that you are worse than usual: <Tooltip title={tooltipText}><HelpIcon className={classes.helpIcon} /></Tooltip></h2>
             {questionRender()}
             <div className={classes.footer}>
                 <ArrowBackIcon className={classes.arrowBackIcon} />
