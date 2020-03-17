@@ -75,7 +75,7 @@ function Profile() {
                                 <InputAdornment position="start">
                                     <img src="/assets/imgs/profile-icon1.png" alt="profile-icon1" className={classes.img} />
                                 </InputAdornment>
-                                ),
+                                )
                             }}
                         />
                         <TextField
@@ -88,7 +88,7 @@ function Profile() {
                                 <InputAdornment position="start">
                                     <img src="/assets/imgs/profile-icon2.png" alt="profile-icon2" className={classes.img} />
                                 </InputAdornment>
-                                ),
+                                )
                             }}
                         />
                         <TextField
@@ -101,7 +101,7 @@ function Profile() {
                                 <InputAdornment position="start">
                                     <img src="/assets/imgs/profile-icon3.png" alt="profile-icon3" className={classes.img} />
                                 </InputAdornment>
-                                ),
+                                )
                             }}
                         />
                         <TextField
@@ -114,7 +114,7 @@ function Profile() {
                                 <InputAdornment position="start">
                                     <img src="/assets/imgs/profile-icon4.png" alt="profile-icon4" className={classes.img} />
                                 </InputAdornment>
-                                ),
+                                )
                             }}
                         />
                     </div>
