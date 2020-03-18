@@ -4,15 +4,15 @@ import clsx from "clsx";
 import { makeStyles, withStyles } from "@material-ui/core/styles";
 import {
   AppBar,
-  Toolbar,
-  Link,
+  Toolbar
 } from "@material-ui/core";
 import { withRouter } from "react-router";
-import AccountCircleIcon from '@material-ui/icons/AccountCircle';
 import IconButton from '@material-ui/core/IconButton';
 import AccountCircle from '@material-ui/icons/AccountCircle';
 import MenuItem from '@material-ui/core/MenuItem';
 import Menu from '@material-ui/core/Menu';
+import { connect } from 'react-redux'
+import AppActions from '../../../actions/app';
 
 const useStyles = makeStyles(theme => ({
   grow: {
@@ -98,6 +98,7 @@ const StyledToolbar = withStyles(theme => ({
 
 function Appbar({
   isAuthenticated,
+  clearRequest,
   history
 }) {
   const classes = useStyles();
@@ -126,7 +127,8 @@ function Appbar({
     setAnchorEl(null);
     localStorage.removeItem("jwt");
     localStorage.removeItem("username");
-    history.push("/")
+    clearRequest();
+    history.push("/login")
   };
 
   return (
@@ -182,4 +184,8 @@ function Appbar({
   );
 }
 
-export default withRouter(Appbar);
+const mapDispatchToProps = dispatch => ({
+  clearRequest: () => dispatch(AppActions.clearRequest())
+})
+
+export default connect(null, mapDispatchToProps)(withRouter(Appbar));

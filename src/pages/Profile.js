@@ -1,10 +1,12 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { makeStyles } from "@material-ui/core/styles";
 import Profilecard from '../components/Profilecard';
 import {
     Grid, TextField, InputAdornment
 } from "@material-ui/core";
 import EditIcon from '@material-ui/icons/Edit';
+import { connect } from 'react-redux'
+import ProfileActions from '../actions/profile';
 
 const useStyle = makeStyles(theme => ({
     profile: {
@@ -45,8 +47,15 @@ const useStyle = makeStyles(theme => ({
         textAlign: "center"
     }
 }));
-function Profile() {
+function Profile({
+    getProfile,
+    profleData
+}) {
     const classes = useStyle();
+    useEffect(()=> {
+        getProfile();
+    }, []);
+    console.log("www", profleData)
     return (
         <div className={classes.profile}>
             <div className={classes.profileContainer}>
@@ -132,4 +141,12 @@ function Profile() {
         </div>
     )
 }
-export default Profile;
+const mapStateToProps = state => ({
+    profleData: state.profile.data
+})
+
+const mapDispatchToProps = dispatch => ({
+    getProfile: () => dispatch(ProfileActions.getProfileRequest()),
+})
+  
+export default connect(mapStateToProps, mapDispatchToProps)(Profile);

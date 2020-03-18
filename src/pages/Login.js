@@ -1,16 +1,16 @@
-import React, {useState} from 'react';
+import React, { useState, useEffect } from 'react';
 import { withRouter } from 'react-router-dom';
 import { makeStyles } from "@material-ui/core/styles";
 import CircularProgress from '@material-ui/core/CircularProgress';
 import Typography from '@material-ui/core/Typography';
 import TextField from '@material-ui/core/TextField';
 import Button from '../components/Button';
+import { connect } from 'react-redux'
+import AuthActions from '../actions/auth';
 
 const useStyle = makeStyles(theme => ({
     login: {
         display: "flex",
-        width: "100%",
-        height: "100vh",
         flexDirection: "column",
         alignItems: "center",
         justifyContent: "center",
@@ -29,39 +29,59 @@ const useStyle = makeStyles(theme => ({
     hereLink: {
         color: "#43747c",
         cursor: "pointer"
+    },
+    responseMsg: {
+        color: 'red'
     }
 }));
 
 function Login({
+    postSignin,
+    signinResponse,
     history
 }) {
     const classes = useStyle();
     const [loading, setLoading] = useState(false);
-    const [username, setUsername] = useState("");
-    const [usernameError, setUsernameError] = useState(false);
-    const [usernameHelperText, setUsernameHelperText] = useState("");
+    // const [email, setEmail] = useState("");
+    // const [emailError, setEmailError] = useState(false);
+    // const [emailHelperText, setEmailHelperText] = useState("");
+    const [identifier, setIdentifier] = useState("");
+    const [identifierError, setIdentifierError] = useState(false);
+    const [identifierHelperText, setIdentifierHelperText] = useState("");
     const [password, setPassword] = useState("");
     const [passwordError, setPasswordError] = useState(false);
     const [passwordHelperText, setPasswordHelperText] = useState("");
+    const [responseMsg, setResponseMsg] = useState("");
 
-    const validateEmail = (email) => {
-        // eslint-disable-next-line
-        var re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-        return re.test(String(email).toLowerCase());
-    }
-    const onUsernameChange = (e) => {
-        setUsername(e.target.value);
-        if (e.target.value === "") {
-            setUsernameError(true);
-            setUsernameHelperText('Email is required.')
-        } else if (!validateEmail(e.target.value)) {
-            setUsernameError(true);
-            setUsernameHelperText('Email is not valid.');
+    useEffect(() => {
+        if(signinResponse.status === "success") {
+            localStorage.setItem('jwt', signinResponse.response.access_token);
+            localStorage.setItem('username', identifier);
+            history.push("/")
         } else {
-            setUsernameError(false);
-            setUsernameHelperText(' ')
+            setResponseMsg(signinResponse.message);
+            setLoading(false);
         }
-    }
+    }, [signinResponse])
+
+    // const validateEmail = (email) => {
+    //     // eslint-disable-next-line
+    //     var re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+    //     return re.test(String(email).toLowerCase());
+    // }
+    // const onEmailChange = (e) => {
+    //     setEmail(e.target.value);
+    //     if (e.target.value === "") {
+    //         setEmailError(true);
+    //         setEmailHelperText('Email is required.')
+    //     } else if (!validateEmail(e.target.value)) {
+    //         setEmailError(true);
+    //         setEmailHelperText('Email is not valid.');
+    //     } else {
+    //         setEmailError(false);
+    //         setEmailHelperText(' ')
+    //     }
+    // }
     const onPasswordChange = (e) => {
         setPassword(e.target.value);
         if (e.target.value === "") {
@@ -72,13 +92,22 @@ function Login({
             setPasswordHelperText(' ');
         }
     }
+    const onIdentifierChange = (e) => {
+        setIdentifier(e.target.value);
+        if (e.target.value === "") {
+            setIdentifierError(true);
+            setIdentifierHelperText('Identifier is required');
+        } else {
+            setIdentifierError(false);
+            setIdentifierHelperText(' ');
+        }
+    }
     const login = () => {
         setLoading(true);
-        setTimeout(()=> {
-            localStorage.setItem('jwt', "test");
-            localStorage.setItem('username', username);
-            history.push("/")
-        }, 3000);
+        const payload = {
+            identifier, password
+        }
+        postSignin(payload);
     }
     return (
         <div className={classes.login}>
@@ -87,15 +116,27 @@ function Login({
             </Typography>
             <TextField
                 variant="outlined"
+                margin="normal"
+                required
+                fullWidth
+                label="Identifier"
+                autoFocus
+                value={identifier}
+                onChange={onIdentifierChange}
+                error={identifierError}
+                helperText={identifierHelperText}
+            />
+            {/* <TextField
+                variant="outlined"
+                margin="normal"
                 required
                 fullWidth
                 label="Email"
-                autoFocus
-                value={username}
-                onChange={onUsernameChange}
-                error={usernameError}
-                helperText={usernameHelperText}
-            />
+                value={email}
+                onChange={onEmailChange}
+                error={emailError}
+                helperText={emailHelperText}
+            /> */}
             <TextField
                 variant="outlined"
                 margin="normal"
@@ -108,9 +149,12 @@ function Login({
                 error={passwordError}
                 helperText={passwordHelperText}
             />
+            {responseMsg &&<span className={classes.responseMsg}>
+                {responseMsg}
+            </span>}
             <Button
                 title="Log In"
-                disabled={usernameError || passwordError}
+                disabled={!identifier || !password || identifierError || passwordError}
                 onPress={login}
                 authButton={true}
                 progressBar={loading && <CircularProgress color="inherit" size={16} className={classes.circularProgress} />}
@@ -121,4 +165,12 @@ function Login({
         </div>
     )
 }
-export default withRouter(Login);
+const mapStateToProps = state => ({
+    signinResponse: state.auth.data
+})
+
+const mapDispatchToProps = dispatch => ({
+    postSignin: payload => dispatch(AuthActions.signinRequest(payload)),
+})
+  
+export default connect(mapStateToProps, mapDispatchToProps)(withRouter(Login));

@@ -1,16 +1,16 @@
-import React, {useState} from 'react';
+import React, { useState, useEffect } from 'react';
 import { withRouter } from 'react-router-dom';
 import { makeStyles } from "@material-ui/core/styles";
 import CircularProgress from '@material-ui/core/CircularProgress';
 import Typography from '@material-ui/core/Typography';
 import TextField from '@material-ui/core/TextField';
 import Button from '../components/Button';
+import { connect } from 'react-redux'
+import AuthActions from '../actions/auth';
 
 const useStyle = makeStyles(theme => ({
     signup: {
         display: "flex",
-        width: "100%",
-        height: "100vh",
         flexDirection: "column",
         alignItems: "center",
         justifyContent: "center",
@@ -30,53 +30,83 @@ const useStyle = makeStyles(theme => ({
         color: "#43747c",
         cursor: "pointer",
         paddingTop: "10px"
+    },
+    responseMsg: {
+        color: 'red'
     }
 }));
 
 function Singup({
+    postSignup,
+    signupResponse,
     history
 }) {
     const classes = useStyle();
     const [loading, setLoading] = useState(false);
-    const [username, setUsername] = useState("");
-    const [usernameError, setUsernameError] = useState(false);
-    const [usernameHelperText, setUsernameHelperText] = useState("");
-    const [fullName, setFullName] = useState("");
-    const [fullNameError, setFullNameError] = useState(false);
-    const [fullNameHelperText, setFullNameHelperText] = useState("");
+    const [inviteCode, setInviteCode] = useState("");
+    const [inviteCodeError, setInviteCodeError] = useState(false);
+    const [inviteCodeHelperText, setInviteCodeHelperText] = useState("");
+    const [email, setEmail] = useState("");
+    const [emailError, setEmailError] = useState(false);
+    const [emailHelperText, setEmailHelperText] = useState("");
+    const [identifier, setIdentifier] = useState("");
+    const [identifierError, setIdentifierError] = useState(false);
+    const [identifierHelperText, setIdentifierHelperText] = useState("");
     const [password, setPassword] = useState("");
     const [passwordError, setPasswordError] = useState(false);
     const [passwordHelperText, setPasswordHelperText] = useState("");
     const [repassword, setRepassword] = useState("");
     const [repasswordError, setRepasswordError] = useState(false);
     const [repasswordHelperText, setRepasswordHelperText] = useState("");
+    const [responseMsg, setResponseMsg] = useState("");
+
+    useEffect(() => {
+        if(signupResponse.status === "success") {
+            localStorage.setItem('jwt', "test");
+            localStorage.setItem('username', identifier);
+            history.push("/")
+        } else {
+            setResponseMsg(signupResponse.message);
+            setLoading(false);
+        }
+    }, [signupResponse])
 
     const validateEmail = (email) => {
         // eslint-disable-next-line
         var re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
         return re.test(String(email).toLowerCase());
     }
-    const onUsernameChange = (e) => {
-        setUsername(e.target.value);
+    const onEmailChange = (e) => {
+        setEmail(e.target.value);
         if (e.target.value === "") {
-            setUsernameError(true);
-            setUsernameHelperText('Email is required.')
+            setEmailError(true);
+            setEmailHelperText('Email is required.')
         } else if (!validateEmail(e.target.value)) {
-            setUsernameError(true);
-            setUsernameHelperText('Email is not valid.');
+            setEmailError(true);
+            setEmailHelperText('Email is not valid.');
         } else {
-            setUsernameError(false);
-            setUsernameHelperText(' ')
+            setEmailError(false);
+            setEmailHelperText(' ')
         }
     }
-    const onFullnameChange = (e) => {
-        setFullName(e.target.value);
+    const onInviteCodeChange = (e) => {
+        setInviteCode(e.target.value);
         if (e.target.value === "") {
-            setFullNameError(true);
-            setFullNameHelperText('Email is required.')
+            setInviteCodeError(true);
+            setInviteCodeHelperText('Invite Code is required.')
         } else {
-            setFullNameError(false);
-            setFullNameHelperText(' ')
+            setInviteCodeError(false);
+            setInviteCodeHelperText(' ')
+        }
+    }
+    const onIdentifierChange = (e) => {
+        setIdentifier(e.target.value);
+        if (e.target.value === "") {
+            setIdentifierError(true);
+            setIdentifierHelperText('Identifier is required.')
+        } else {
+            setIdentifierError(false);
+            setIdentifierHelperText(' ')
         }
     }
     const onPasswordChange = (e) => {
@@ -100,10 +130,18 @@ function Singup({
         }
     }
     const signup = () => {
-        setLoading(true);
-        setTimeout(()=> {
-            console.log("signup")
-        }, 3000);
+        if(password !== repassword) {
+            setPasswordError(true);
+            setRepasswordError(true);
+            setPasswordHelperText('Password is not matched');
+            setRepasswordHelperText('Password is not matched');
+        } else {
+            setLoading(true);
+            const payload = {
+                email, identifier, password, packageId: 1, inviteCode
+            }
+            postSignup(payload);
+        }
     }
     return (
         <div className={classes.signup}>
@@ -115,23 +153,34 @@ function Singup({
                 margin="normal"
                 required
                 fullWidth
-                label="Full Name"
+                label="inviteCode"
                 autoFocus
-                value={fullName}
-                onChange={onFullnameChange}
-                error={fullNameError}
-                helperText={fullNameHelperText}
+                value={inviteCode}
+                onChange={onInviteCodeChange}
+                error={inviteCodeError}
+                helperText={inviteCodeHelperText}
             />
             <TextField
                 variant="outlined"
                 margin="normal"
                 required
                 fullWidth
-                label="Email"
-                value={username}
-                onChange={onUsernameChange}
-                error={usernameError}
-                helperText={usernameHelperText}
+                label="Identifier"
+                value={identifier}
+                onChange={onIdentifierChange}
+                error={identifierError}
+                helperText={identifierHelperText}
+            />
+            <TextField
+                variant="outlined"
+                margin="normal"
+                required
+                fullWidth
+                label="email"
+                value={email}
+                onChange={onEmailChange}
+                error={emailError}
+                helperText={emailHelperText}
             />
             <TextField
                 variant="outlined"
@@ -157,9 +206,12 @@ function Singup({
                 error={repasswordError}
                 helperText={repasswordHelperText}
             />
+            {responseMsg &&<span className={classes.responseMsg}>
+                {responseMsg}
+            </span>}
             <Button
                 title="Sing Up"
-                disabled={usernameError || passwordError}
+                disabled={!inviteCode || !identifier || !email || !password || !repassword || inviteCodeError || identifierError || emailError || passwordError || repasswordError}
                 onPress={signup}
                 authButton={true}
                 progressBar={loading && <CircularProgress color="inherit" size={16} className={classes.circularProgress} />}
@@ -170,4 +222,13 @@ function Singup({
         </div>
     )
 }
-export default withRouter(Singup);
+
+const mapStateToProps = state => ({
+    signupResponse: state.auth.data
+})
+
+const mapDispatchToProps = dispatch => ({
+    postSignup: payload => dispatch(AuthActions.signupRequest(payload))
+})
+  
+export default connect(mapStateToProps, mapDispatchToProps)(withRouter(Singup));
