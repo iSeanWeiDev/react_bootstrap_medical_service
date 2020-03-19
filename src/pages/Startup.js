@@ -8,14 +8,21 @@ import Button from '../components/Button'
 
 const useStyles = makeStyles(theme => ({
     startup: {
-        padding: '125px',
-        flexGrow: 1
+        marginTop: '100px',
+        flexGrow: 1,
+        width: "1000px",
+        margin: "auto"
     },
     leftLayout: {
         padding: '2rem',
     },
     img: {
-        width: '100%',
+        position: 'relative',
+        width: '80%',
+        float: 'right',
+        minHeight: '360px',
+        minWidth: '310px',
+        display: 'flex',
     },
     rightLayout: {
         fontFamily: "'Roboto', 'sans-serif'",
@@ -27,7 +34,7 @@ const useStyles = makeStyles(theme => ({
         width: "100%",
     },
     subTitle: {
-        paddingLeft: '30%',
+        paddingLeft: '20%',
         fontSize: '36px',
         fontWeight: 400,
         color: "#293845",
