@@ -14,7 +14,7 @@ const useStyle = makeStyles(theme => ({
         flexDirection: "column",
         alignItems: "center",
         justifyContent: "center",
-        width: "650px",
+        width: "400px",
         height: "700px",
         margin: "auto"
     },
@@ -22,8 +22,10 @@ const useStyle = makeStyles(theme => ({
         marginRight: "10px"
     },
     title: {
-        color: "#43747c",
-        fontWeight: "900",
+        color: "#61aba6",
+        fontWeight: "400",
+        fontSize: '32px',
+        lineHeight: '30px',
         padding: "10px"
     },
     hereLink: {
@@ -33,6 +35,22 @@ const useStyle = makeStyles(theme => ({
     },
     responseMsg: {
         color: 'red'
+    },
+    btnLogin: {
+        width: '400px',
+        height: '50px',
+        color: 'white',
+        background: '#61aba6',
+        outline: 'none',
+        border: 'none',
+        borderRadius: '3px',
+        fontSize: '20px',
+        fontWeight: 700,
+        fontFamily: "'Roboto', sans-serif",
+    },
+    footerString: {
+        paddingTop: '15px',
+        color: '#293845',
     }
 }));
 
@@ -146,7 +164,7 @@ function Singup({
     return (
         <div className={classes.signup}>
             <Typography component="h1" variant="h5" className={classes.title}>
-                Sign Up
+                Awesome!
             </Typography>
             <TextField
                 variant="outlined"
@@ -210,14 +228,18 @@ function Singup({
                 {responseMsg}
             </span>}
             <Button
+                style={classes.btnLogin}
                 title="Sing Up"
                 disabled={!inviteCode || !identifier || !email || !password || !repassword || inviteCodeError || identifierError || emailError || passwordError || repasswordError}
                 onPress={signup}
                 authButton={true}
                 progressBar={loading && <CircularProgress color="inherit" size={16} className={classes.circularProgress} />}
             />
-            <Typography component="h1" variant="h5">
-                Do you have already your account? If yes, click <span className={classes.hereLink} onClick={()=>history.push("/login")}>here</span>
+            <Typography className={classes.footerString}>
+                Do you have already your account? If yes, click 
+                <span className={classes.hereLink} onClick={()=>history.push("/login")}>
+                    &nbsp;here
+                </span>
             </Typography>
         </div>
     )

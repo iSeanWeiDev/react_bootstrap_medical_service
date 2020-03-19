@@ -4,19 +4,20 @@ import clsx from "clsx";
 import { makeStyles, withStyles } from "@material-ui/core/styles";
 import {
   AppBar,
-  Toolbar
+  Toolbar,
+  Menu,
+  MenuItem,
 } from "@material-ui/core";
 import { withRouter } from "react-router";
 import IconButton from '@material-ui/core/IconButton';
-import AccountCircle from '@material-ui/icons/AccountCircle';
-import MenuItem from '@material-ui/core/MenuItem';
-import Menu from '@material-ui/core/Menu';
+import { AccountCircle } from '@material-ui/icons';
 import { connect } from 'react-redux'
 import AppActions from '../../../actions/app';
 
 const useStyles = makeStyles(theme => ({
   grow: {
-    flexGrow: 1
+    flexGrow: 1,
+    fontFamily: "'Roboto', 'sans-serif'",
   },
   logoContainer: {
     display: "flex",
@@ -37,8 +38,10 @@ const useStyles = makeStyles(theme => ({
 
   },
   link: {
-    padding: "10px",
-    cursor: "pointer"
+    paddingRight: "25px",
+    cursor: "pointer",
+    color: "#293845",
+    fontSize: "18px",
   },
   sectionDesktop: {
     display: "none",
@@ -73,21 +76,22 @@ const useStyles = makeStyles(theme => ({
   },
   accountSpan: {
     float: "right",
-    fontSize: "14px",
-    fontWeight: "900",
+    color: "#293845",
+    fontSize: "18px",
+    fontWeight: 500,
     width: "150px",
     textAlign: "right"
   },
   iconButton: {
-    color: "#dfe6ed",
+    color: "#293845",
     fontSize: "40px",
     cursor: "pointer",
     float: "right"
   },
   accountIcon: {
-    color: "#dfe6ed",
+    color: "#293845",
     fontSize: "40px",
-  }
+  },
 }));
 
 const StyledToolbar = withStyles(theme => ({
@@ -146,7 +150,7 @@ function Appbar({
           <div className={classes.sectionDesktop}>
             <div className={classes.accountContainer}>
                 <span className={classes.accountSpan}>
-                  {isAuthenticated ? localStorage.getItem("username") : "Sign In or Sign Up"}
+                  {isAuthenticated ? localStorage.getItem("username") : "Login or Signup"}
                 </span>
                 <IconButton
                   aria-label="account of current user"

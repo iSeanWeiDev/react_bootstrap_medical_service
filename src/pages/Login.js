@@ -14,7 +14,7 @@ const useStyle = makeStyles(theme => ({
         flexDirection: "column",
         alignItems: "center",
         justifyContent: "center",
-        width: "650px",
+        width: "400px",
         height: "700px",
         margin: "auto"
     },
@@ -22,8 +22,10 @@ const useStyle = makeStyles(theme => ({
         marginRight: "10px"
     },
     title: {
-        color: "#43747c",
-        fontWeight: "900",
+        color: "#61aba6",
+        fontWeight: "400",
+        fontSize: '32px',
+        lineHeight: '30px',
         padding: "10px"
     },
     hereLink: {
@@ -32,6 +34,22 @@ const useStyle = makeStyles(theme => ({
     },
     responseMsg: {
         color: 'red'
+    },
+    btnLogin: {
+        width: '400px',
+        height: '50px',
+        color: 'white',
+        background: '#61aba6',
+        outline: 'none',
+        border: 'none',
+        borderRadius: '3px',
+        fontSize: '20px',
+        fontWeight: 700,
+        fontFamily: "'Roboto', sans-serif",
+    },
+    footerString: {
+        paddingTop: '15px',
+        color: '#293845',
     }
 }));
 
@@ -111,8 +129,8 @@ function Login({
     }
     return (
         <div className={classes.login}>
-            <Typography component="h1" variant="h5" className={classes.title}>
-                Sign in
+            <Typography className={classes.title}>
+                Welcome to ITEREX.
             </Typography>
             <TextField
                 variant="outlined"
@@ -154,13 +172,17 @@ function Login({
             </span>}
             <Button
                 title="Log In"
+                style={classes.btnLogin}
                 disabled={!identifier || !password || identifierError || passwordError}
                 onPress={login}
                 authButton={true}
                 progressBar={loading && <CircularProgress color="inherit" size={16} className={classes.circularProgress} />}
             />
-            <Typography component="h1" variant="h5">
-                Don't you have your account yet? If yes, click <span className={classes.hereLink} onClick={()=>history.push("/signup")}>here</span>
+            <Typography className={classes.footerString}>
+                Don't you have your account yet? If yes, click 
+                <span className={classes.hereLink} onClick={()=>history.push("/signup")}>
+                    &nbsp;here
+                </span>
             </Typography>
         </div>
     )
