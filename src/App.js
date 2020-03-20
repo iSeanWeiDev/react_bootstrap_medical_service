@@ -17,6 +17,7 @@ import Screening from './pages/Screening';
 import Result from './pages/Result';
 import Login from './pages/Login';
 import Signup from './pages/Signup';
+import Continue from './pages/Continue';
 
 const renderWithLayout = (Component, Layout) => <Layout isAuthenticated={localStorage.getItem("jwt")}>{Component}</Layout>;
 const App = ({ history }) => (
@@ -73,6 +74,12 @@ const App = ({ history }) => (
             path="/result"
             exact
             render={() => renderWithLayout(<Result />, MainLayout)}
+          />
+
+          <PrivateRoute
+            path="/continue"
+            exact
+            render={() => renderWithLayout(<Continue />, MainLayout)}
           />
         />
         </Switch>
