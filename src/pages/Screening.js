@@ -4,26 +4,31 @@ import QAComp from '../components/QAComp';
 
 const useStyle = makeStyles(theme => ({
     screening: {
-        flexGrow: 1
+        flexGrow: 1,
+        width: "600px",
+        margin: "auto"
     },
     title: {
-        color: "#43747c",
-        fontWeight: "900",
         margin: "auto",
-        width: "650px",
-        paddingBottom: "10px"
+        width: "600px",
+        fontSize: '30px',
+        fontWeight: 800,
+        fontFamily: "'Roboto', 'sans-serif'",
+        color: '#1aae9f',
+        padding: '15px 0px 15px 0px',
     },
     qacomp: {
-        border: "1px solid #43747c",
-        width: "650px",
+        border: "3px solid #1aae9f",
+        width: "600px",
         height: "700px",
         margin: "auto",
-        position: "relative"
+        position: "relative",
+        padding: "25px 55px 25px 25px"
     }
 }));
 function Screening() {
     const questions = {
-        questionType: 4,
+        questionType: 2,
         questions: [
             "Shortness of Breath",
             "Cough",
@@ -35,7 +40,11 @@ function Screening() {
     const classes = useStyle();
     return (
         <div className={classes.screening}>
-            <h1 className={classes.title}>Screening</h1>
+            <div className={classes.title}>
+                <span>
+                    Screening
+                </span>
+            </div>
             <div className={classes.qacomp}>
                 <QAComp questions={questions} />
             </div>

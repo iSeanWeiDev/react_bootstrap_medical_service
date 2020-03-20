@@ -2,8 +2,6 @@ import React, {useState} from 'react';
 import { makeStyles } from "@material-ui/core/styles";
 import HelpIcon from '@material-ui/icons/Help';
 import { Checkbox, Radio, InputLabel, MenuItem, FormControl, Select } from '@material-ui/core';
-import ArrowForwardIcon from '@material-ui/icons/ArrowForward';
-import ArrowBackIcon from '@material-ui/icons/ArrowBack';
 import Tooltip from '@material-ui/core/Tooltip';
 import { withRouter } from 'react-router-dom';
 
@@ -12,30 +10,75 @@ const useStyles = makeStyles(theme => ({
         flexGrow: 1
     },
     helpIcon: {
+        fontSize: "2.6rem",
+        position: "absolute",
+        right: "20px",
+        top: "20px",
     },
-    questionItem: {
-        color: "black"
+    question: {
+        display: "inline",
+        fontSize: "22px",
+        color: "#293845",
+        fontWeight: 600,
+        fontFamily: "'Roboto', 'sans-serif'",
+    },
+    questionItem1: {
+        fontFamily: "'Roboto', 'sans-serif'",
+        fontSize: "18px",
+        color: "#293845",
+        padding: "10px",
+    },
+    questionItem2: {
+        fontSize: "18px",
+        fontFamily: "'Roboto', 'sans-serif'",
+        padding: "10px",
+        color: "#293845"
+    },
+    questionItem3: {
+        fontFamily: "'Roboto', 'sans-serif'",
+        fontSize: "18px",
+        padding: "10px",
+        color: "#293845"
+    },
+    answerInput: {
+        width: '300px',
+        height: '50px',
+        borderRadius: '3px',
+        border: '2px solid #c3cfd9',
+        outline: 'none',
+        padding: '10px',
+        fontSize: '18px',
+        fontWeight: 500,
+        fontFamily: "'Roboto', sans-serif",
+    },
+    questionItem4: {
+        fontFamily: "'Roboto', 'sans-serif'",
+        fontSize: "18px",
+        padding: "10px",
+        color: "#293845"
     },
     formControl: {
         margin: theme.spacing(1),
-        minWidth: 600,
+        minWidth: 300,
     },
     footer: {
         position: 'absolute',
         bottom: '0px',
-        width: "600px",
+        width: "540px",
         left: "25px",
-        borderTop: "1px solid"
+        borderTop: "3px solid #1aae9f",
     },
     arrowBackIcon: {
-        fontSize: "40px",
+        width: "40px",
+        height: "40px",
         float: "left",
         marginTop: "10px",
         marginBottom: "10px",
         cursor: "pointer"
     },
     arrowForwardIcon: {
-        fontSize: "40px",
+        width: "40px",
+        height: "40px",
         float: "right",
         marginTop: "10px",
         marginBottom: "10px",
@@ -57,19 +100,18 @@ const QAComp = ({
         switch(questions.questionType) {
             case 1: 
                 return (
-                    <div className={classes.questionItem}>
+                    <div className={classes.questionItem1}>
                         <Radio />
-                        Yes
+                        Yes <br />
                         <Radio />
                         No
                     </div>
-                    
                 )
             case 2: 
                 return (
                     questions.questions.map(question=>
                         (
-                            <div className={classes.questionItem}>
+                            <div className={classes.questionItem2}>
                                 <Checkbox />
                                 <span>{question}</span>
                             </div>
@@ -78,13 +120,15 @@ const QAComp = ({
                 )
             case 3: 
                 return (
-                    <div className={classes.questionItem}>
-                        <input placeholder="Please type your age" />
+                    <div className={classes.questionItem3}>
+                        <input
+                            className={classes.answerInput} 
+                            placeholder="Please type your age" />
                     </div>
                 )
             case 4:
                 return (
-                    <div className={classes.questionItem}>
+                    <div className={classes.questionItem4}>
                         <FormControl variant="filled" className={classes.formControl}>
                             <InputLabel id="demo-simple-select-filled-label">Input Oxygen Saturation</InputLabel>
                             <Select
@@ -107,11 +151,30 @@ const QAComp = ({
     }
     return (
         <div className={classes.container}>
-            <h2>Select any symptoms that you are worse than usual: <Tooltip title={tooltipText}><HelpIcon className={classes.helpIcon} /></Tooltip></h2>
-            {questionRender()}
+            <div className={classes.question}>
+                <span>
+                    Select any symptoms that you are worse than usual:
+                </span>
+                <Tooltip
+                    title={tooltipText}>
+                    <HelpIcon className={classes.helpIcon} />
+                </Tooltip>
+            </div>
+            <div className="answer">
+                {questionRender()}
+            </div>
             <div className={classes.footer}>
-                <ArrowBackIcon className={classes.arrowBackIcon} />
-                <ArrowForwardIcon className={classes.arrowForwardIcon} onClick={()=>{history.push("/result")}} />
+                <img
+                    className={classes.arrowBackIcon} 
+                    src="/assets/imgs/icon-arrow-left.png" 
+                    alt="iconArrowLeft" 
+                />
+                <img
+                    className={classes.arrowForwardIcon}
+                    onClick={()=>{history.push("/result")}} 
+                    src="/assets/imgs/icon-arrow-right.png" 
+                    alt="iconArrowRight" 
+                />
             </div>
         </div>
     )

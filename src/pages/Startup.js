@@ -8,7 +8,6 @@ import Button from '../components/Button'
 
 const useStyles = makeStyles(theme => ({
     startup: {
-        marginTop: '100px',
         flexGrow: 1,
         width: "1000px",
         margin: "auto"
