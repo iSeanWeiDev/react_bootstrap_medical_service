@@ -10,28 +10,36 @@ import ProfileActions from '../actions/profile';
 
 const useStyle = makeStyles(theme => ({
     profile: {
-        flexGrow: 1
+        flexGrow: 1,
+        width: "550px",
+        margin: "auto"
     },
     title: {
-        color: "#43747c",
-        fontWeight: "900",
         margin: "auto",
-        width: "650px",
-        paddingBottom: "10px"
+        width: "550px",
+        fontSize: '30px',
+        fontWeight: 800,
+        fontFamily: "'Roboto', 'sans-serif'",
+        color: '#1aae9f',
+        padding: '15px 0px 15px 0px',
+        letterSpacing: "1px",
     },
     profileContainer: {
-        border: "1px solid #43747c",
-        width: "650px",
+        border: "3px solid #1aae9f",
+        width: "550px",
         height: "700px",
         margin: "auto",
-        position: "relative"
+        position: "relative",
+        padding: "25px",
+        flex: 1,
     },
     profileContent: {
         width: "500px",
         margin: "auto"
     },
     gridRoot: {
-        flexGrow: 1
+        flexGrow: 1,
+        padding:'10px 30px 20px 30px',
     },
     profileSection: {
         textAlign: "center"
@@ -58,8 +66,12 @@ function Profile({
     console.log("www", profleData)
     return (
         <div className={classes.profile}>
+             <div className={classes.title}>
+                 <span>
+                    Health Profile
+                 </span>
+             </div>
             <div className={classes.profileContainer}>
-                <h1 className={classes.title}>Health Profile</h1>
                 <div className={classes.profileContent}>
                     <Grid container className={classes.gridRoot} spacing={1}>
                         <Grid item xs={4}>

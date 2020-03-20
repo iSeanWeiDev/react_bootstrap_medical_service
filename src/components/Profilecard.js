@@ -9,38 +9,54 @@ const ProfileCard = ({
         container: {
             border: "1px solid #43747c",
             position: "relative",
-            minHeight: "150px"
+            minHeight: "160px",
+            border: '2px solid #c3cfd9',
+            borderRadius: '3px',
+            textAlign: 'center',
+            fontFamily: "'Roboto', 'sans-serif'",
         },
         img: {
-            width: "20px",
+            width: "30px",
+            height: "30px",
             position: "absolute",
-            top: "5px",
-            right: "5px"
+            top: "7px",
+            right: "7px"
         },
         value: {
             position: "absolute",
             top: "50%",
             left: "50%",
             transform: "translate(-50%, -50%)",
-            color: "black",
-            fontSize: "30px",
-            fontWeight: "900"
+            color: "#293845",
+            fontSize: "35px",
+            letterSpacing: '1px',
+            fontWeight: "400"
         },
         text: {
             position: "absolute",
-            bottom: "0px",
-            left: "10px",
-            color: "#43747c",
-            fontSize: "10x",
-            fontWeight: "900"
-        }
+            bottom: "17px",
+            textAlign: 'center',
+            width: '100%',
+            display: 'flex',
+            justifyContent: "center",
+
+        },
+        content: {
+            color: "#1aae9f",
+            fontSize: "12.5x",
+            fontWeight: "600",
+        },
     }));
     const classes = useStyles();
     return (
         <div className={classes.container}>
             <img src="/assets/imgs/icon5.png" alt="icon5" className={classes.img} />
-            <span className={classes.value}>{value}</span>
-            <p className={classes.text}>{text}</p>
+            <div className={classes.value}>{value}</div>
+            <div className={classes.text}>
+                <span className={classes.content}>
+                    {text}
+                </span>
+            </div>
         </div>
     )
 }
