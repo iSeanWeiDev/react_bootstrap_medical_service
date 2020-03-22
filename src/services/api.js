@@ -27,7 +27,7 @@ const create = (baseURL = Config.API_URL) => {
   // get profile
   const getProfile = () => authenticated(api).get('/user/profile');
 
-  const getScreening = () => authenticated(api).get('/health/question');
+  const getScreening = payload => authenticated(api).get('/health/question', payload); 
 
   return {
     postSignin,

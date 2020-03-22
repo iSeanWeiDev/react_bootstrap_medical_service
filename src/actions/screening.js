@@ -4,7 +4,7 @@ const { Types, Creators } = createActions({
   /**
    * get Screen
    */
-  getScreeningRequest: [],
+  getScreeningRequest: ['payload'],
   getScreeningSuccess: ['response'],
   getScreeningFailure: ['response'],
 })

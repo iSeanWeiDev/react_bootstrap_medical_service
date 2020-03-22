@@ -7,9 +7,10 @@ const initialState = Immutable({
   data: "",
 })
 
-const screeningRequest = (state, action) =>
+const getScreeningRequest = (state, action) =>
   state.merge({ ...state, status: 'pending'})
-const screeningSuccess = (state, action) => {
+
+const getScreeningSuccess = (state, action) => {
   const data = action.response;
   return state.merge({
     ...state,
@@ -17,7 +18,8 @@ const screeningSuccess = (state, action) => {
     data: data
   })
 }
-const screeningFailure = (state, action) => {
+
+const getScreeningFailure = (state, action) => {
   const data = action.response;
   return state.merge({
     ...state,
@@ -27,7 +29,7 @@ const screeningFailure = (state, action) => {
 }
 
 export const reducer = createReducer(initialState, {
-  [ScreeningTypes.SCREENING_REQUEST]: screeningRequest,
-  [ScreeningTypes.SCREENING_SUCCESS]: screeningSuccess,
-  [ScreeningTypes.SCREENING_FAILURE]: screeningFailure,
+  [ScreeningTypes.GET_SCREENING_REQUEST]: getScreeningRequest,
+  [ScreeningTypes.GET_SCREENING_SUCCESS]: getScreeningSuccess,
+  [ScreeningTypes.GET_SCREENING_FAILURE]: getScreeningFailure,
 });

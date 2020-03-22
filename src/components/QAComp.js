@@ -90,14 +90,16 @@ const QAComp = ({
     questions,
     history
 }) => {
+    console.log(questions);
     const classes = useStyles();
     const tooltipText = `help text`;
     const [answer, setAnswer] = useState("");
     const handleChange = (event) => {
         setAnswer(event.target.value);
     }
-    const questionRender = () => {
-        switch(questions.questionType) {
+    const answerRender = item => {
+        console.log(item);
+        switch(item.answerType) {
             case 1: 
                 return (
                     <div className={classes.questionItem1}>
@@ -130,15 +132,20 @@ const QAComp = ({
                 return (
                     <div className={classes.questionItem4}>
                         <FormControl variant="filled" className={classes.formControl}>
-                            <InputLabel id="demo-simple-select-filled-label">Input Oxygen Saturation</InputLabel>
+                            <InputLabel id="demo-simple-select-filled-label">
+                                {item.text}
+                            </InputLabel>
                             <Select
                                 labelId="demo-simple-select-filled-label"
                                 id="demo-simple-select-filled"
                                 value={answer}
                                 onChange={handleChange}
                             >
-                                <MenuItem value={"90%"}>90%</MenuItem>
-                                <MenuItem value={"80%"}>80%</MenuItem>
+                                {item.data.map(attr => {
+                                    <MenuItem value={attr.value} isKey>
+                                        {attr.text}
+                                    </MenuItem>
+                                })}
                             </Select>
                         </FormControl>
                     </div>
@@ -153,7 +160,7 @@ const QAComp = ({
         <div className={classes.container}>
             <div className={classes.question}>
                 <span>
-                    Select any symptoms that you are worse than usual:
+                    {questions.question}
                 </span>
                 <Tooltip
                     title={tooltipText}>
@@ -161,7 +168,7 @@ const QAComp = ({
                 </Tooltip>
             </div>
             <div className="answer">
-                {questionRender()}
+                {questions.answers.map(item=> answerRender(item))}
             </div>
             <div className={classes.footer}>
                 <img

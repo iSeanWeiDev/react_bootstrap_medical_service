@@ -1,6 +1,11 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { makeStyles } from "@material-ui/core/styles";
 import QAComp from '../components/QAComp';
+import { connect } from 'react-redux'
+import { equals, isEmpty, isNil } from 'ramda'
+
+import ScreeningActions from '../actions/screening';
+import LoadingSpinner from '../components/LoadingSpinner';
 
 const useStyle = makeStyles(theme => ({
     screening: {
@@ -26,7 +31,18 @@ const useStyle = makeStyles(theme => ({
         padding: "25px 55px 25px 25px"
     }
 }));
-function Screening() {
+function Screening({
+    getScreeningRequest,
+    screeningData,
+    isDone,
+}) {
+    useEffect(()=> {
+        const payload = {
+            "operation":"start",
+            "questionSetTypeName": "PROCESS_ONBOARDING"
+        }
+        getScreeningRequest(payload);
+    }, []);
     const questions = {
         questionType: 3,
         questions: [
@@ -40,15 +56,33 @@ function Screening() {
     const classes = useStyle();
     return (
         <div className={classes.screening}>
-            <div className={classes.title}>
-                <span>
-                    Screening
-                </span>
-            </div>
-            <div className={classes.qacomp}>
-                <QAComp questions={questions} />
-            </div>
+            {!isDone ? (
+                <LoadingSpinner />
+            ) : (
+                <div>
+                    <div className={classes.title}>
+                        <span>
+                            Screening
+                        </span>
+                    </div>
+                    <div className={classes.qacomp}>
+                        <QAComp questions={screeningData.response} />
+                    </div>
+                </div>
+            )}
         </div>
     )
 }
-export default Screening;
+
+const mapStateToProps = state => {
+    return ({
+        screeningData: state.screening.data,
+        isDone: equals(state.screening.status, 'done')
+    })
+}
+
+const mapDispatchToProps = dispatch => ({
+    getScreeningRequest: payload =>  dispatch(ScreeningActions.getScreeningRequest(payload))
+})
+
+export default connect(mapStateToProps, mapDispatchToProps)(Screening);
