@@ -1,8 +1,6 @@
 import React from 'react';
 import { makeStyles } from "@material-ui/core/styles";
-import {
-    Grid
-} from "@material-ui/core";
+import { Grid } from "@material-ui/core";
 import Button from '../components/Button';
 import { withRouter } from 'react-router-dom';
 
@@ -103,6 +101,7 @@ const useStyle = makeStyles(theme => ({
         display: "flex",
         padding: "10px",
         alignItems: "center",
+        cursor: 'pointer',
         justifyContent: "center",
     },
     helpBtn: {
@@ -177,17 +176,18 @@ function Home({
                         <Grid item xs={12}>
                             <Grid container className={classes.btnGroup} spacing={1}>
                                 <Grid item xs={6}>
-                                    <div className={classes.helpSection}>
+                                    <div 
+                                        className={classes.helpSection}
+                                        onClick={()=>history.push("/screening")} 
+                                    >
                                         <img
                                             style={{paddingRight: "15px", width: "47px", height: '40px',}}  
                                             src="/assets/imgs/icon6.png" 
                                             alt="icon6" 
                                         />
-                                        <Button 
-                                            style={classes.helpBtn} 
-                                            title="COVID-19 Prescreening" 
-                                            authButton={false} 
-                                        />
+                                        <span 
+                                            className={classes.helpBtn} 
+                                        >COVID-19 Prescreening</span>
                                     </div>
                                     
                                 </Grid>
@@ -195,18 +195,16 @@ function Home({
                                     <div 
                                         className={classes.helpSection}
                                         style={{float: 'right'}}
+                                        onClick={()=>history.push("/screening")} 
                                     >
                                         <img
                                             style={{paddingRight: "15px", width: "47px", height: '40px',}}  
                                             src="/assets/imgs/icon7.png" 
                                             alt="icon7" 
                                         />
-                                        <Button 
-                                            style={classes.helpBtn} 
-                                            title="Check My Symptoms" 
-                                            onPress={()=>history.push("/screening")} 
-                                            authButton={false}
-                                        />
+                                        <span 
+                                            className={classes.helpBtn} 
+                                        >Check My Symptoms</span>
                                     </div>
                                 </Grid>
                             </Grid>
