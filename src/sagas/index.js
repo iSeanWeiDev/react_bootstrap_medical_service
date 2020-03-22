@@ -3,6 +3,7 @@ import API from '../services/api'
 
 import { AuthTypes } from '../actions/auth'
 import { ProfileTypes } from '../actions/profile'
+import { ScreeningTypes } from '../actions/screening'
 
 import {
   signinRequest,
@@ -12,6 +13,10 @@ import {
 import {
   getProfileRequest
 } from './profile'
+
+import {
+  getScreeningRequest
+} from './screening'
 
 const api = API.create();
 
@@ -25,6 +30,9 @@ export default function* root() {
 
     // ------------------------- Profile Sagas
     takeLatest(ProfileTypes.GET_PROFILE_REQUEST, getProfileRequest, api),
+
+    // ------------------------- Screening Sagas
+    takeLatest(ScreeningTypes.GET_SCREENING_REQUEST, getScreeningRequest, api),
 
   ])
 }

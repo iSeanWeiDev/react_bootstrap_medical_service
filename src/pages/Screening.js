@@ -28,7 +28,7 @@ const useStyle = makeStyles(theme => ({
 }));
 function Screening() {
     const questions = {
-        questionType: 2,
+        questionType: 3,
         questions: [
             "Shortness of Breath",
             "Cough",
