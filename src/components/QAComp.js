@@ -101,7 +101,7 @@ const QAComp = ({
     const [answer, setAnswer] = useState({});
     useEffect(()=>{
         let tempAnswer = {};
-        questions.answers && questions.answers.map(answer=>{
+        questions && questions.answers && questions.answers.map(answer=>{
             tempAnswer = {
                 ...tempAnswer,
                 [answer.answerId]: answer.value
