@@ -136,9 +136,8 @@ function Result({
     const classes = useStyle();
     const tooltipText = `help text`;
     useEffect(()=> {
-        predictionRequest();
+        predictionRequest(history.location.state.actions ? history.location.state.actions.PREDICTION : {url: "/health/amiokay?operation=predict"});
     },[])
-    console.log('qqq', history.location.state.endAction)
     console.log("eeee", prediction)
     return (
         <div className={classes.result}>
@@ -209,7 +208,7 @@ const mapStateToProps = state => ({
 })
 
 const mapDispatchToProps = dispatch => ({
-    predictionRequest: () =>  dispatch(ScreeningActions.predictionRequest())
+    predictionRequest: (payload) =>  dispatch(ScreeningActions.predictionRequest(payload))
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(withRouter(Result));

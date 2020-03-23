@@ -59,18 +59,22 @@ const create = (baseURL = Config.API_URL) => {
 
   // get profile
   const getProfile = () => authMiddleWare(api, null, 'get', '/health/profile');
+  const editProfile = (payload) => authMiddleWare(api, null, 'get', payload.url);
 
   // screening
   const getScreening = payload => authMiddleWare(api, payload, 'get', `/health/question`); 
   const nextQuestion = payload => authMiddleWare(api, null, 'get', payload.url);
   const previousQuestion = payload => authMiddleWare(api, null, 'get', payload.url);
   const saveAnswer = payload => authMiddleWare(api, payload, 'post', '/health/answer');
-  const prediction = () => authMiddleWare(api, null, 'get', '/health/amiokay');
+  const prediction = payload => authMiddleWare(api, null, 'get', payload.url);
 
   return {
     postSignin,
     postSingup,
+
     getProfile,
+    editProfile,
+
     getScreening,
     nextQuestion,
     previousQuestion,

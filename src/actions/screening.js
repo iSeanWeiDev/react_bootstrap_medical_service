@@ -22,7 +22,7 @@ const { Types, Creators } = createActions({
   saveAnswerSuccess: ['response'],
   saveAnswerFailure: null,
 
-  predictionRequest: [],
+  predictionRequest: ['payload'],
   predictionSuccess: ['response'],
   predictionFailure: ['response'],
   

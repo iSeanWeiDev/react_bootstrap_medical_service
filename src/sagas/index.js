@@ -11,7 +11,8 @@ import {
 } from './auth'
 
 import {
-  getProfileRequest
+  getProfileRequest,
+  editProfileRequest
 } from './profile'
 
 import {
@@ -34,6 +35,7 @@ export default function* root() {
 
     // ------------------------- Profile Sagas
     takeLatest(ProfileTypes.GET_PROFILE_REQUEST, getProfileRequest, api),
+    takeLatest(ProfileTypes.EDIT_PROFILE_REQUEST, editProfileRequest, api),
 
     // ------------------------- Screening Sagas
     takeLatest(ScreeningTypes.GET_SCREENING_REQUEST, getScreeningRequest, api),

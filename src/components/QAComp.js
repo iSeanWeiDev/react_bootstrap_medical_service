@@ -52,6 +52,8 @@ const useStyles = makeStyles(theme => ({
         fontSize: '18px',
         fontWeight: 500,
         fontFamily: "'Roboto', sans-serif",
+        overflowX: "unset",
+        overflowY: "scroll"
     },
     questionItem4: {
         fontFamily: "'Roboto', 'sans-serif'",
@@ -97,21 +99,31 @@ const QAComp = ({
     const classes = useStyles();
     const tooltipText = `help text`;
     const [answer, setAnswer] = useState({});
- 
+    useEffect(()=>{
+        let tempAnswer = {};
+        questions.answers && questions.answers.map(answer=>{
+            tempAnswer = {
+                ...tempAnswer,
+                [answer.answerId]: answer.value
+            };
+        })
+        setAnswer(tempAnswer)
+    }, [questions])
+    console.log(questions)
     const handleChange = (event, answerType, key) => {
         switch(answerType) {
             case 1:
-                console.log('ww', event.target.value) 
+                console.log('annn', event.target.value)
                 setAnswer({
                     ...answer,
-                    [key]: event.target.value === "yes" ? true : -1
+                    [key]: event.target.value === "yes" ? 1 : event.target.value === "no" ? 0 : -1
                 });
                 break;
 
             case 2: 
                 setAnswer({
                     ...answer,
-                    [key]: event.target.checked
+                    [key]: event.target.checked ? 1 : 0
                 });
                 break;
             default: 
@@ -122,7 +134,7 @@ const QAComp = ({
                 break;
         }
     }
-
+    console.log("answer", answer)
     const AnswerComponent = (data) => {
         switch(data.answerType) {
             case 1: 
@@ -130,7 +142,7 @@ const QAComp = ({
                     <div className={classes.questionItem1}>
                         <FormControl component="fieldset">
                             <FormLabel component="legend">{data.text}</FormLabel>
-                            <RadioGroup value={answer[data.answerId]} onChange={(e)=>handleChange(e, 1, data.answerId)}>
+                            <RadioGroup value={answer[data.answerId] === 1 ? "yes" : answer[data.answerId] === 0 ? "no" : -1} onChange={(e)=>handleChange(e, 1, data.answerId)}>
                                 <FormControlLabel value="yes" control={<Radio />} label="Yes" />
                                 <FormControlLabel value="no" control={<Radio />} label="No" />
                             </RadioGroup>
@@ -141,7 +153,7 @@ const QAComp = ({
                 return (
                     <div className={classes.questionItem2}>
                         <Checkbox 
-                            checked={answer[data.answerId] || false}
+                            checked={answer[data.answerId] === 1 ? answer[data.answerId] : false}
                             onChange={(e)=>handleChange(e, 2, data.answerId)}
                         />
                         <span>{data.text}</span>
@@ -152,8 +164,8 @@ const QAComp = ({
                     <div className={classes.questionItem3}>
                         <input
                             className={classes.answerInput} 
-                            placeholder={data.attribute.hintText}
-                            value={answer[data.answerId] || ""}
+                            placeholder={data.attribute && data.attribute.hintText}
+                            value={answer[data.answerId] !== -1 ? answer[data.answerId] : ""}
                             onChange={(e)=>handleChange(e, 3, data.answerId)} 
                         />
                     </div>
@@ -168,11 +180,11 @@ const QAComp = ({
                             <Select
                                 labelId="demo-simple-select-filled-label"
                                 id="demo-simple-select-filled"
-                                value={answer[data.answerId] || ""}
+                                value={answer[data.answerId] !== -1 ? answer[data.answerId] : ""}
                                 onChange={(e)=> handleChange(e, 4, data.answerId)}
                             >
                                 {data.attribute.data.map(attr => (
-                                    <MenuItem value={attr.value} key={attr.value}>
+                                    <MenuItem value={parseInt(attr.value)} key={attr.value}>
                                         {attr.text}
                                     </MenuItem>
                                 ))}
@@ -191,41 +203,39 @@ const QAComp = ({
         const payload = questions.actions.previous;
         previousQuestionRequest(payload);
     }
-    
     const nextQuestion = () => {
         const questionsAnswer = questions.answers;
         const savePayload = {
-            questionId: questions.actions.answer.body.questionId,
-            userQuestionnaireResponseId: questions.actions.answer.body.userQuestionnaireResponseId,
-            answers: questionsAnswer.map(_answer=>{
+            questionId: questions.actions.answer && questions.actions.answer.body.questionId,
+            userQuestionnaireResponseId: questions.actions.answer && questions.actions.answer.body.userQuestionnaireResponseId,
+            answers: questionsAnswer && questionsAnswer.map(_answer=>{
                 return {
                     answerId: _answer.answerId,
-                    value: answer[_answer.answerId]
+                    value: answer[_answer.answerId] !== -1 ? answer[_answer.answerId] : -1
                 }
             })
         }
-        console.log("answer", answer)
         const nextPayload = questions.actions.next;
         saveAnswerRequest(savePayload);
         nextQuestionRequest(nextPayload);
     }
 
-    const isValid = () => {
-        const validation = false;
-        console.log('www', questions.answers)
-        questions.answers.foreach(answer=>{
-            if(questions.answers.answerType === 2){
-                return answerCount(answer) > 0 ? -1 : "Please select one of answers"
-            } else {
-                return answerCount(answer) === questions.answers.length ? -1 : "Please answer for all questions"
-            }    
-        })
-    }
+    // const isValid = () => {
+    //     const validation = false;
+    //     console.log('www', questions.answers)
+    //     questions.answers.foreach(answer=>{
+    //         if(questions.answers.answerType === 2){
+    //             return answerCount(answer) > 0 ? -1 : "Please select one of answers"
+    //         } else {
+    //             return answerCount(answer) === questions.answers.length ? -1 : "Please answer for all questions"
+    //         }    
+    //     })
+    // }
     return (
         <div className={classes.container}>
             <div className={classes.question}>
                 <span>
-                    {questions.question}
+                    {questions && questions.question}
                 </span>
                 <Tooltip
                     title={tooltipText}>
@@ -233,7 +243,7 @@ const QAComp = ({
                 </Tooltip>
             </div>
             <div className="answer">
-                {questions.answers.map(item=> (
+                {questions && questions.answers && questions.answers.map(item=> (
                     <div key={item.answerId}>
                         {AnswerComponent(item)}
                     </div>
@@ -248,7 +258,7 @@ const QAComp = ({
                 />
                 <img
                     className={classes.arrowForwardIcon}
-                    onClick={() => !isValid() ? nextQuestion() : alert("Please answer for all questions.")} 
+                    onClick={nextQuestion} 
                     src="/assets/imgs/icon-arrow-right.png" 
                     alt="iconArrowRight" 
                 />

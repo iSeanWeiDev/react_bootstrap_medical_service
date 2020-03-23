@@ -17,6 +17,11 @@ const { Types, Creators } = createActions({
   getProfileRequest: [],
   getProfileSuccess: ['response'],
   getProfileFailure: null,
+
+  // edit profile
+  editProfileRequest: ['payload'],
+  editProfileSuccess: ['response'],
+  editProfileFailure: ['response'],
 })
 
 export const ProfileTypes = Types

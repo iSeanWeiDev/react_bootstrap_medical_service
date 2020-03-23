@@ -13,6 +13,7 @@ import About from './pages/About'
 import Solutions from "./pages/Solutions";
 import Contact from "./pages/Contact";
 import Profile from './pages/Profile';
+import EditProfile from './pages/EditProfile';
 import Screening from './pages/Screening';
 import Result from './pages/Result';
 import Login from './pages/Login';
@@ -65,6 +66,11 @@ const App = () => (
             path="/profile"
             exact
             render={() => renderWithLayout(<Profile />, MainLayout)}
+          />
+          <PrivateRoute
+            path="/editprofile"
+            exact
+            render={() => renderWithLayout(<EditProfile />, MainLayout)}
           />
           <PrivateRoute
             path="/screening/:type"
