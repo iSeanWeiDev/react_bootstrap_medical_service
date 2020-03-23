@@ -1,9 +1,9 @@
 import React from 'react';
-import { BrowserRouter as Router, Switch, Route, Redirect } from "react-router-dom";
+import { Router, Switch, Route, Redirect } from "react-router-dom";
+import {history} from './reducers'
 import { ThemeProvider } from "@material-ui/styles";
 import { store } from './reducers';
 import { Provider } from 'react-redux';
-
 import { MainLayout } from "./layouts";
 import theme from "./theme";
 
@@ -19,8 +19,9 @@ import Login from './pages/Login';
 import Signup from './pages/Signup';
 import Continue from './pages/Continue';
 
-const renderWithLayout = (Component, Layout) => <Layout isAuthenticated={localStorage.getItem("jwt")}>{Component}</Layout>;
-const App = ({ history }) => (
+const renderWithLayout = (Component, Layout) => <Layout isAuthenticated={localStorage.getItem("access_token")}>{Component}</Layout>;
+
+const App = () => (
   <Provider store={store}>
     <ThemeProvider theme={theme}>
       <Router history={history}>
@@ -28,7 +29,7 @@ const App = ({ history }) => (
           <Route
             path="/"
             exact
-            render={() => renderWithLayout(<Startup isAuthenticated={localStorage.getItem("jwt")} />, MainLayout)}
+            render={() => renderWithLayout(<Startup isAuthenticated={localStorage.getItem("access_token")} />, MainLayout)}
           />
           <Route
             path="/login"
@@ -66,14 +67,14 @@ const App = ({ history }) => (
             render={() => renderWithLayout(<Profile />, MainLayout)}
           />
           <PrivateRoute
-            path="/screening"
+            path="/screening/:type"
             exact
             render={() => renderWithLayout(<Screening />, MainLayout)}
           />
           <PrivateRoute
             path="/result"
             exact
-            render={() => renderWithLayout(<Result />, MainLayout)}
+            render={props => renderWithLayout(<Result {...props} />, MainLayout)}
           />
 
           <PrivateRoute
@@ -89,7 +90,7 @@ const App = ({ history }) => (
 )
 
 const PrivateRoute = (rest) => {
-  const isAuthenticated = localStorage.getItem("jwt");
+  const isAuthenticated = localStorage.getItem("access_token");
     if(isAuthenticated) {
       return (<Route {...rest} />) 
     } else {

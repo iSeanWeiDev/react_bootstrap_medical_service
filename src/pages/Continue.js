@@ -1,9 +1,13 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { makeStyles } from "@material-ui/core/styles";
 import { withRouter } from 'react-router-dom';
 import HelpIcon from '@material-ui/icons/Help';
 import Button from '../components/Button';
 import Tooltip from '@material-ui/core/Tooltip';
+import { connect } from 'react-redux';
+import ScreeningActions from '../actions/screening';
+import { equals, isEmpty, isNil } from 'ramda'
+import LoadingSpinner from '../components/LoadingSpinner';
 
 const useStyle = makeStyles(theme => ({
     result: {
@@ -106,58 +110,106 @@ const useStyle = makeStyles(theme => ({
         fontSize: '18px',
         fontWeight: 700,
         fontFamily: "'Roboto', sans-serif",
+        cursor: 'pointer'
+    },
+    btnContinue: {
+        width: '200px',
+        height: '50px',
+        color: 'white',
+        background: '#1aae9f;',
+        outline: 'none',
+        border: 'none',
+        borderRadius: '3px',
+        fontSize: '18px',
+        fontWeight: 700,
+        fontFamily: "'Roboto', sans-serif",
+        cursor: 'pointer'
     },
 }));
 function Result({
-    history
+    isDone,
+    prediction,
+    predictionRequest,
+    history,
+    match
 }) {
     const classes = useStyle();
     const tooltipText = `help text`;
+    useEffect(()=> {
+        predictionRequest();
+    },[])
+    console.log('qqq', history.location.state.endAction)
+    console.log("eeee", prediction)
     return (
         <div className={classes.result}>
             <div className={classes.title}>
                 <span>Screening Results</span>
             </div>
-            <div className={classes.resultContainer}>
-                <div className={classes.containerTitle}>
-                    <img
-                        className={classes.containerTitleImg} 
-                        src="/assets/imgs/icon-continue.png" 
-                        alt="iconMedicine" 
-                    />
-                    <span className={classes.containerTitleSpan}>
-                        You are unlikely to be approved for COVID-19 virus testing at any healthcare facility. 
-                    </span>
-                    <Tooltip
-                        title={tooltipText}>
-                        <HelpIcon className={classes.helpIcon} />
-                    </Tooltip>
+            
+                <div className={classes.resultContainer}>
+                    {!isDone ? (
+                        <LoadingSpinner />
+                    ) : (
+                        <>
+                            <div className={classes.containerTitle}>
+                                <img
+                                    className={classes.containerTitleImg} 
+                                    src="/assets/imgs/icon-continue.png" 
+                                    alt="iconMedicine" 
+                                />
+                                <span className={classes.containerTitleSpan}>
+                                    You are unlikely to be approved for COVID-19 virus testing at any healthcare facility. 
+                                </span>
+                                <Tooltip
+                                    title={tooltipText}>
+                                    <HelpIcon className={classes.helpIcon} />
+                                </Tooltip>
+                            </div>
+                            <div className={classes.containerContent}>
+                                <div className={classes.contentSection}>
+                                    {prediction.message ? <span>
+                                        {prediction.message}
+                                    </span> :
+                                    <span>
+                                        Please continue with your usual treatment
+                                        plan and check your symptoms to access
+                                        your current health.
+                                    </span> }
+                                </div>
+                                <div className={classes.contentBottomSection}>
+                                    <span className={classes.contentBottomSpan}>
+                                        Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.
+                                    </span>
+                                </div>
+                            </div>
+                            
+                            <div className={classes.footer}>
+                                {prediction.message ? <Button 
+                                    style={classes.btnContinue}
+                                    title="Continue to complete questionnaire" 
+                                    onPress={()=>history.push("/home")} 
+                                    authButton={false} 
+                                /> : 
+                                <Button 
+                                    style={classes.btnComplete}
+                                    title="Complete" 
+                                    onPress={()=>history.push("/result")} 
+                                    authButton={false} 
+                                />}
+                            </div>
+                        </>
+                    )}
                 </div>
-                <div className={classes.containerContent}>
-                    <div className={classes.contentSection}>
-                        <span>
-                            Please continue with your usual treatment
-                            plan and check your symptoms to access
-                            your current health.
-                        </span>
-                    </div>
-                    <div className={classes.contentBottomSection}>
-                        <span className={classes.contentBottomSpan}>
-                            Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.
-                        </span>
-                    </div>
-                </div>
-                
-                <div className={classes.footer}>
-                    <Button 
-                        style={classes.btnComplete}
-                        title="Complete" 
-                        onPress={()=>history.push("/")} 
-                        authButton={false} 
-                    />
-                </div>
-            </div>
         </div>
     )
 }
-export default withRouter(Result);
+const mapStateToProps = state => ({
+    prediction: state.screening.data,
+    isDone: !equals(state.screening.status, "pending")
+})
+
+const mapDispatchToProps = dispatch => ({
+    predictionRequest: () =>  dispatch(ScreeningActions.predictionRequest())
+})
+
+export default connect(mapStateToProps, mapDispatchToProps)(withRouter(Result));

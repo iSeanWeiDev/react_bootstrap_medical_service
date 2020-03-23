@@ -3,7 +3,7 @@ import { makeStyles } from "@material-ui/core/styles";
 import {
     Grid
 } from "@material-ui/core";
-import { withRouter } from "react-router";
+import { useHistory } from "react-router-dom";
 import Button from '../components/Button'
 
 const useStyles = makeStyles(theme => ({
@@ -62,10 +62,11 @@ const useStyles = makeStyles(theme => ({
     }
 }));
 function Startup({
-    isAuthenticated,
-    history
+    isAuthenticated
 }) {
     const classes = useStyles();
+    const history = useHistory();
+
     return (
         <div className={classes.startup}>
             <Grid container className={classes.root} spacing={1}>
@@ -97,4 +98,4 @@ function Startup({
         </div>
     )
 }
-export default withRouter(Startup);
+export default Startup;

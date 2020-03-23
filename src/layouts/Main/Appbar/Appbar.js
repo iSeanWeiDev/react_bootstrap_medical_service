@@ -8,7 +8,7 @@ import {
   Menu,
   MenuItem,
 } from "@material-ui/core";
-import { withRouter } from "react-router";
+import { useHistory } from "react-router-dom";
 import IconButton from '@material-ui/core/IconButton';
 import { AccountCircle } from '@material-ui/icons';
 import { connect } from 'react-redux'
@@ -103,9 +103,9 @@ const StyledToolbar = withStyles(theme => ({
 function Appbar({
   isAuthenticated,
   clearRequest,
-  history
 }) {
   const classes = useStyles();
+  const history = useHistory();
   const [anchorEl, setAnchorEl] = React.useState(null);
   const open = Boolean(anchorEl);
 
@@ -129,7 +129,8 @@ function Appbar({
 
   const Logout = () => {
     setAnchorEl(null);
-    localStorage.removeItem("jwt");
+    localStorage.removeItem("access_token");
+    localStorage.removeItem("refresh_token");
     localStorage.removeItem("username");
     clearRequest();
     history.push("/login")
@@ -192,4 +193,4 @@ const mapDispatchToProps = dispatch => ({
   clearRequest: () => dispatch(AppActions.clearRequest())
 })
 
-export default connect(null, mapDispatchToProps)(withRouter(Appbar));
+export default connect(null, mapDispatchToProps)(Appbar);

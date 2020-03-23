@@ -2,7 +2,7 @@ import React from 'react';
 import { makeStyles } from "@material-ui/core/styles";
 import { Grid } from "@material-ui/core";
 import Button from '../components/Button';
-import { withRouter } from 'react-router-dom';
+import { useHistory } from 'react-router-dom';
 
 const useStyle = makeStyles(theme => ({
     root: {
@@ -138,9 +138,10 @@ const useStyle = makeStyles(theme => ({
     },
 }));
 function Home({
-    history
+    
 }) {
     const classes = useStyle();
+    const history = useHistory();
     return (
         <div className={classes.home}>
             <Grid container className={classes.root} spacing={1}>
@@ -178,7 +179,7 @@ function Home({
                                 <Grid item xs={6}>
                                     <div 
                                         className={classes.helpSection}
-                                        onClick={()=>history.push("/screening")} 
+                                        onClick={()=>history.push("/screening/aio")} 
                                     >
                                         <img
                                             style={{paddingRight: "15px", width: "47px", height: '40px',}}  
@@ -195,7 +196,7 @@ function Home({
                                     <div 
                                         className={classes.helpSection}
                                         style={{float: 'right'}}
-                                        onClick={()=>history.push("/screening")} 
+                                        onClick={()=>history.push("/screening/onboarding")} 
                                     >
                                         <img
                                             style={{paddingRight: "15px", width: "47px", height: '40px',}}  
@@ -253,4 +254,4 @@ function Home({
         </div>
     )
 }
-export default withRouter(Home);
+export default Home;

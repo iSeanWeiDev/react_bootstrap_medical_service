@@ -3,7 +3,7 @@ import { makeStyles } from "@material-ui/core/styles";
 import QAComp from '../components/QAComp';
 import { connect } from 'react-redux'
 import { equals, isEmpty, isNil } from 'ramda'
-
+import { useRouteMatch, useHistory } from 'react-router-dom';
 import ScreeningActions from '../actions/screening';
 import LoadingSpinner from '../components/LoadingSpinner';
 
@@ -36,50 +36,41 @@ function Screening({
     screeningData,
     isDone,
 }) {
+    const classes = useStyle();
+    const history = useHistory();
+    const match = useRouteMatch();
     useEffect(()=> {
         const payload = {
             "operation":"start",
-            "questionSetTypeName": "PROCESS_ONBOARDING"
+            "questionSetTypeName": match.params.type === "aio" ? "PROCESS_AIO" : "PROCESS_ONBOARDING"
         }
         getScreeningRequest(payload);
     }, []);
-    const questions = {
-        questionType: 3,
-        questions: [
-            "Shortness of Breath",
-            "Cough",
-            "Fever",
-            "Chest Pain",
-            "Phlegm"
-        ]
-    }
-    const classes = useStyle();
+
     return (
         <div className={classes.screening}>
-            {!isDone ? (
-                <LoadingSpinner />
-            ) : (
-                <div>
-                    <div className={classes.title}>
-                        <span>
-                            Screening
-                        </span>
-                    </div>
-                    <div className={classes.qacomp}>
-                        <QAComp questions={screeningData.response} />
-                    </div>
+            <div>
+                <div className={classes.title}>
+                    <span>
+                        Screening
+                    </span>
                 </div>
-            )}
+                <div className={classes.qacomp}>
+                {!isDone ? (
+                    <LoadingSpinner />
+                ) : (
+                    <QAComp questions={screeningData.response} />
+                )}
+                </div>
+            </div>
         </div>
     )
 }
 
-const mapStateToProps = state => {
-    return ({
-        screeningData: state.screening.data,
-        isDone: equals(state.screening.status, 'done')
-    })
-}
+const mapStateToProps = state => ({
+    screeningData: state.screening.data,
+    isDone: equals(state.screening.status, 'done')
+})
 
 const mapDispatchToProps = dispatch => ({
     getScreeningRequest: payload =>  dispatch(ScreeningActions.getScreeningRequest(payload))

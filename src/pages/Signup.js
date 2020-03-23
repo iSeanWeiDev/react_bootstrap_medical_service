@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { withRouter } from 'react-router-dom';
+import { useHistory } from 'react-router-dom';
 import { makeStyles } from "@material-ui/core/styles";
 import CircularProgress from '@material-ui/core/CircularProgress';
 import Typography from '@material-ui/core/Typography';
@@ -57,9 +57,10 @@ const useStyle = makeStyles(theme => ({
 function Singup({
     postSignup,
     signupResponse,
-    history
 }) {
     const classes = useStyle();
+    const history=useHistory();
+    
     const [loading, setLoading] = useState(false);
     const [inviteCode, setInviteCode] = useState("");
     const [inviteCodeError, setInviteCodeError] = useState(false);
@@ -80,7 +81,9 @@ function Singup({
 
     useEffect(() => {
         if(signupResponse.status === "success") {
-            localStorage.setItem('jwt', "test");
+            localStorage.setItem('access_token', signupResponse.response.access_token);
+            localStorage.setItem('refresh_token', signupResponse.response.refresh_token);
+
             localStorage.setItem('username', identifier);
             history.push("/")
         } else {
@@ -156,7 +159,7 @@ function Singup({
         } else {
             setLoading(true);
             const payload = {
-                email, identifier, password, packageId: 1, inviteCode
+                email, identifier, password, package: 1, inviteCode
             }
             postSignup(payload);
         }
@@ -253,4 +256,4 @@ const mapDispatchToProps = dispatch => ({
     postSignup: payload => dispatch(AuthActions.signupRequest(payload))
 })
   
-export default connect(mapStateToProps, mapDispatchToProps)(withRouter(Singup));
+export default connect(mapStateToProps, mapDispatchToProps)(Singup);

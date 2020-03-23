@@ -114,6 +114,7 @@ const useStyle = makeStyles(theme => ({
         fontSize: '18px',
         fontWeight: 700,
         fontFamily: "'Roboto', sans-serif",
+        cursor: "pointer"
     },
     
 }));
@@ -122,6 +123,7 @@ function Result({
 }) {
     const classes = useStyle();
     const tooltipText = `help text`;
+
     return (
         <div className={classes.result}>
             <div className={classes.title}>

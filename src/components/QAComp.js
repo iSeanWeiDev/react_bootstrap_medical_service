@@ -1,9 +1,11 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import { makeStyles } from "@material-ui/core/styles";
 import HelpIcon from '@material-ui/icons/Help';
-import { Checkbox, Radio, InputLabel, MenuItem, FormControl, Select } from '@material-ui/core';
+import { Checkbox, RadioGroup, FormControlLabel, FormLabel, Radio, InputLabel, MenuItem, FormControl, Select } from '@material-ui/core';
 import Tooltip from '@material-ui/core/Tooltip';
-import { withRouter } from 'react-router-dom';
+import { useHistory } from 'react-router-dom';
+import { connect } from 'react-redux';
+import ScreeningActions from '../actions/screening';
 
 const useStyles = makeStyles(theme => ({
     container: {
@@ -88,44 +90,72 @@ const useStyles = makeStyles(theme => ({
 
 const QAComp = ({
     questions,
-    history
+    saveAnswerRequest,
+    nextQuestionRequest,
+    previousQuestionRequest,
 }) => {
-    console.log(questions);
     const classes = useStyles();
     const tooltipText = `help text`;
-    const [answer, setAnswer] = useState("");
-    const handleChange = (event) => {
-        setAnswer(event.target.value);
+    const [answer, setAnswer] = useState({});
+ 
+    const handleChange = (event, answerType, key) => {
+        switch(answerType) {
+            case 1:
+                console.log('ww', event.target.value) 
+                setAnswer({
+                    ...answer,
+                    [key]: event.target.value === "yes" ? true : -1
+                });
+                break;
+
+            case 2: 
+                setAnswer({
+                    ...answer,
+                    [key]: event.target.checked
+                });
+                break;
+            default: 
+                setAnswer({
+                    ...answer,
+                    [key]: event.target.value
+                });
+                break;
+        }
     }
-    const answerRender = item => {
-        console.log(item);
-        switch(item.answerType) {
+
+    const AnswerComponent = (data) => {
+        switch(data.answerType) {
             case 1: 
                 return (
                     <div className={classes.questionItem1}>
-                        <Radio />
-                        Yes <br />
-                        <Radio />
-                        No
+                        <FormControl component="fieldset">
+                            <FormLabel component="legend">{data.text}</FormLabel>
+                            <RadioGroup value={answer[data.answerId]} onChange={(e)=>handleChange(e, 1, data.answerId)}>
+                                <FormControlLabel value="yes" control={<Radio />} label="Yes" />
+                                <FormControlLabel value="no" control={<Radio />} label="No" />
+                            </RadioGroup>
+                        </FormControl>
                     </div>
                 )
             case 2: 
                 return (
-                    questions.questions.map(question=>
-                        (
-                            <div className={classes.questionItem2}>
-                                <Checkbox />
-                                <span>{question}</span>
-                            </div>
-                        )
-                    )
+                    <div className={classes.questionItem2}>
+                        <Checkbox 
+                            checked={answer[data.answerId] || false}
+                            onChange={(e)=>handleChange(e, 2, data.answerId)}
+                        />
+                        <span>{data.text}</span>
+                    </div>
                 )
             case 3: 
                 return (
                     <div className={classes.questionItem3}>
                         <input
                             className={classes.answerInput} 
-                            placeholder="Please type your age" />
+                            placeholder={data.attribute.hintText}
+                            value={answer[data.answerId] || ""}
+                            onChange={(e)=>handleChange(e, 3, data.answerId)} 
+                        />
                     </div>
                 )
             case 4:
@@ -133,19 +163,19 @@ const QAComp = ({
                     <div className={classes.questionItem4}>
                         <FormControl variant="filled" className={classes.formControl}>
                             <InputLabel id="demo-simple-select-filled-label">
-                                {item.text}
+                                {data.text}
                             </InputLabel>
                             <Select
                                 labelId="demo-simple-select-filled-label"
                                 id="demo-simple-select-filled"
-                                value={answer}
-                                onChange={handleChange}
+                                value={answer[data.answerId] || ""}
+                                onChange={(e)=> handleChange(e, 4, data.answerId)}
                             >
-                                {item.data.map(attr => {
-                                    <MenuItem value={attr.value} isKey>
+                                {data.attribute.data.map(attr => (
+                                    <MenuItem value={attr.value} key={attr.value}>
                                         {attr.text}
                                     </MenuItem>
-                                })}
+                                ))}
                             </Select>
                         </FormControl>
                     </div>
@@ -155,6 +185,41 @@ const QAComp = ({
                     <span>There are no any questions to display.</span>
                 )
         }
+    }
+
+    const previousQuestion = () => {
+        const payload = questions.actions.previous;
+        previousQuestionRequest(payload);
+    }
+    
+    const nextQuestion = () => {
+        const questionsAnswer = questions.answers;
+        const savePayload = {
+            questionId: questions.actions.answer.body.questionId,
+            userQuestionnaireResponseId: questions.actions.answer.body.userQuestionnaireResponseId,
+            answers: questionsAnswer.map(_answer=>{
+                return {
+                    answerId: _answer.answerId,
+                    value: answer[_answer.answerId]
+                }
+            })
+        }
+        console.log("answer", answer)
+        const nextPayload = questions.actions.next;
+        saveAnswerRequest(savePayload);
+        nextQuestionRequest(nextPayload);
+    }
+
+    const isValid = () => {
+        const validation = false;
+        console.log('www', questions.answers)
+        questions.answers.foreach(answer=>{
+            if(questions.answers.answerType === 2){
+                return answerCount(answer) > 0 ? -1 : "Please select one of answers"
+            } else {
+                return answerCount(answer) === questions.answers.length ? -1 : "Please answer for all questions"
+            }    
+        })
     }
     return (
         <div className={classes.container}>
@@ -168,17 +233,22 @@ const QAComp = ({
                 </Tooltip>
             </div>
             <div className="answer">
-                {questions.answers.map(item=> answerRender(item))}
+                {questions.answers.map(item=> (
+                    <div key={item.answerId}>
+                        {AnswerComponent(item)}
+                    </div>
+                ))}
             </div>
             <div className={classes.footer}>
                 <img
                     className={classes.arrowBackIcon} 
+                    onClick={previousQuestion}
                     src="/assets/imgs/icon-arrow-left.png" 
                     alt="iconArrowLeft" 
                 />
                 <img
                     className={classes.arrowForwardIcon}
-                    onClick={()=>{history.push("/result")}} 
+                    onClick={() => !isValid() ? nextQuestion() : alert("Please answer for all questions.")} 
                     src="/assets/imgs/icon-arrow-right.png" 
                     alt="iconArrowRight" 
                 />
@@ -186,4 +256,11 @@ const QAComp = ({
         </div>
     )
 }
-export default withRouter(QAComp);
+
+const mapDispatchToProps = dispatch => ({
+    nextQuestionRequest: payload=> dispatch(ScreeningActions.nextQuestionRequest(payload)),
+    previousQuestionRequest: payload=> dispatch(ScreeningActions.previousQuestionRequest(payload)),
+    saveAnswerRequest: payload =>  dispatch(ScreeningActions.saveAnswerRequest(payload))
+})
+
+export default connect(null, mapDispatchToProps)(QAComp);

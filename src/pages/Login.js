@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { withRouter } from 'react-router-dom';
+import { useHistory } from 'react-router-dom';
 import { makeStyles } from "@material-ui/core/styles";
 import CircularProgress from '@material-ui/core/CircularProgress';
 import Typography from '@material-ui/core/Typography';
@@ -55,14 +55,12 @@ const useStyle = makeStyles(theme => ({
 
 function Login({
     postSignin,
-    signinResponse,
-    history
+    signinResponse
 }) {
     const classes = useStyle();
+    const history = useHistory();
+    
     const [loading, setLoading] = useState(false);
-    // const [email, setEmail] = useState("");
-    // const [emailError, setEmailError] = useState(false);
-    // const [emailHelperText, setEmailHelperText] = useState("");
     const [identifier, setIdentifier] = useState("");
     const [identifierError, setIdentifierError] = useState(false);
     const [identifierHelperText, setIdentifierHelperText] = useState("");
@@ -73,7 +71,9 @@ function Login({
 
     useEffect(() => {
         if(signinResponse.status === "success") {
-            localStorage.setItem('jwt', signinResponse.response.access_token);
+            localStorage.setItem('access_token', signinResponse.response.access_token);
+            localStorage.setItem('refresh_token', signinResponse.response.refresh_token);
+
             localStorage.setItem('username', identifier);
             history.push("/")
         } else {
@@ -82,24 +82,6 @@ function Login({
         }
     }, [signinResponse])
 
-    // const validateEmail = (email) => {
-    //     // eslint-disable-next-line
-    //     var re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-    //     return re.test(String(email).toLowerCase());
-    // }
-    // const onEmailChange = (e) => {
-    //     setEmail(e.target.value);
-    //     if (e.target.value === "") {
-    //         setEmailError(true);
-    //         setEmailHelperText('Email is required.')
-    //     } else if (!validateEmail(e.target.value)) {
-    //         setEmailError(true);
-    //         setEmailHelperText('Email is not valid.');
-    //     } else {
-    //         setEmailError(false);
-    //         setEmailHelperText(' ')
-    //     }
-    // }
     const onPasswordChange = (e) => {
         setPassword(e.target.value);
         if (e.target.value === "") {
@@ -144,17 +126,6 @@ function Login({
                 error={identifierError}
                 helperText={identifierHelperText}
             />
-            {/* <TextField
-                variant="outlined"
-                margin="normal"
-                required
-                fullWidth
-                label="Email"
-                value={email}
-                onChange={onEmailChange}
-                error={emailError}
-                helperText={emailHelperText}
-            /> */}
             <TextField
                 variant="outlined"
                 margin="normal"
@@ -195,4 +166,4 @@ const mapDispatchToProps = dispatch => ({
     postSignin: payload => dispatch(AuthActions.signinRequest(payload)),
 })
   
-export default connect(mapStateToProps, mapDispatchToProps)(withRouter(Login));
+export default connect(mapStateToProps, mapDispatchToProps)(Login);

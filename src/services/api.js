@@ -4,9 +4,42 @@ const Config = {
   API_URL: 'https://cors-anywhere.herokuapp.com/https://iterex-backend-staging.herokuapp.com/api/v2'
 };
 
-const authenticated = api => {
-  api.setHeader('Authorization', localStorage.getItem('jwt'))
-  return api
+
+const authMiddleWare = (api, payload, method, url) => {
+  api.setHeader('Authorization', localStorage.getItem('access_token'))
+
+  if(method === 'get') {
+    return api.get(url, payload).then(res1=>{
+      if(res1.data.message === "Provide a valid token.") {
+        api.setHeader('Authorization', localStorage.getItem('refresh_token'))
+        return api.get('/auth/refresh').then(authRes=> {
+          if(authRes.ok) {
+            localStorage.setItem('access_token', authRes.data.response.access_token);
+            api.setHeader('Authorization', authRes.data.response.access_token)
+            return api.get(url, payload)
+          }
+        })
+      } else {
+        return res1
+      }
+    });
+  }
+  if(method === 'post') {
+    return api.post(url, payload).then(res1=>{
+      if(res1.data.message === "Provide a valid token.") {
+        api.setHeader('Authorization', localStorage.getItem('refresh_token'))
+        return api.get('/auth/refresh').then(authRes=> {
+          if(authRes.ok) {
+            localStorage.setItem('access_token', authRes.data.response.access_token);
+            api.setHeader('Authorization', authRes.data.response.access_token)
+            return api.post(url, payload)
+          }
+        })
+      } else {
+        return res1
+      }
+    });
+  }
 }
 
 const create = (baseURL = Config.API_URL) => {
@@ -25,15 +58,24 @@ const create = (baseURL = Config.API_URL) => {
   const postSingup = payload => api.post('/auth/create', payload);
 
   // get profile
-  const getProfile = () => authenticated(api).get('/user/profile');
+  const getProfile = () => authMiddleWare(api, null, 'get', '/health/profile');
 
-  const getScreening = payload => authenticated(api).get('/health/question', payload); 
+  // screening
+  const getScreening = payload => authMiddleWare(api, payload, 'get', `/health/question`); 
+  const nextQuestion = payload => authMiddleWare(api, null, 'get', payload.url);
+  const previousQuestion = payload => authMiddleWare(api, null, 'get', payload.url);
+  const saveAnswer = payload => authMiddleWare(api, payload, 'post', '/health/answer');
+  const prediction = () => authMiddleWare(api, null, 'get', '/health/amiokay');
 
   return {
     postSignin,
     postSingup,
     getProfile,
-    getScreening
+    getScreening,
+    nextQuestion,
+    previousQuestion,
+    saveAnswer,
+    prediction
   }
 }
 

@@ -15,7 +15,11 @@ import {
 } from './profile'
 
 import {
-  getScreeningRequest
+  getScreeningRequest,
+  nextQuestionRequest,
+  previousQuestionRequest,
+  saveAnswerRequest,
+  predictionRequest
 } from './screening'
 
 const api = API.create();
@@ -33,6 +37,10 @@ export default function* root() {
 
     // ------------------------- Screening Sagas
     takeLatest(ScreeningTypes.GET_SCREENING_REQUEST, getScreeningRequest, api),
+    takeLatest(ScreeningTypes.NEXT_QUESTION_REQUEST, nextQuestionRequest, api),
+    takeLatest(ScreeningTypes.PREVIOUS_QUESTION_REQUEST, previousQuestionRequest, api),
+    takeLatest(ScreeningTypes.SAVE_ANSWER_REQUEST, saveAnswerRequest, api),
+    takeLatest(ScreeningTypes.PREDICTION_REQUEST, predictionRequest, api),
 
   ])
 }
