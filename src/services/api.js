@@ -1,14 +1,12 @@
 import apisauce from 'apisauce'
 
 const Config = {
-  API_URL: 'https://cors-anywhere.herokuapp.com/https://iterex-backend-staging.herokuapp.com/api/v2'
+  API_URL: 'https://shrouded-peak-29455.herokuapp.com/https://iterex-backend-staging.herokuapp.com/api/v2'
 };
 
 
 const authMiddleWare = (api, payload, method, url) => {
   api.setHeader('Authorization', localStorage.getItem('access_token'))
-
-  console.log('authmiddleware', localStorage.getItem('access_token'));
 
   if(method === 'get') {
     return api.get(url, payload).then(res1=>{

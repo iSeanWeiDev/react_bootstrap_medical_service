@@ -179,7 +179,7 @@ function Home({
                                 <Grid item xs={6}>
                                     <div 
                                         className={classes.helpSection}
-                                        onClick={()=>history.push("/screening/aio")} 
+                                        onClick={()=>history.push("/screening/prescreening")} 
                                     >
                                         <img
                                             style={{paddingRight: "15px", width: "47px", height: '40px',}}  
@@ -196,7 +196,7 @@ function Home({
                                     <div 
                                         className={classes.helpSection}
                                         style={{float: 'right'}}
-                                        onClick={()=>history.push("/screening/onboarding")} 
+                                        onClick={()=>history.push("/screening/aio")} 
                                     >
                                         <img
                                             style={{paddingRight: "15px", width: "47px", height: '40px',}}  

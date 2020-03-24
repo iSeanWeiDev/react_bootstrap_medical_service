@@ -96,9 +96,11 @@ const QAComp = ({
     nextQuestionRequest,
     previousQuestionRequest,
 }) => {
+    console.log('questions', questions)
     const classes = useStyles();
     const tooltipText = `help text`;
     const [answer, setAnswer] = useState({});
+
     useEffect(()=>{
         let tempAnswer = {};
         questions && questions.answers && questions.answers.map(answer=>{
@@ -109,14 +111,12 @@ const QAComp = ({
         })
         setAnswer(tempAnswer)
     }, [questions])
-    console.log(questions)
+
     const handleChange = (event, answerType, key) => {
         switch(answerType) {
             case 1:
-                console.log('annn', event.target.value)
                 setAnswer({
-                    ...answer,
-                    [key]: event.target.value === "yes" ? 1 : event.target.value === "no" ? 0 : -1
+                    [key]: event.target.checked ? 1 : 0
                 });
                 break;
 
@@ -134,19 +134,19 @@ const QAComp = ({
                 break;
         }
     }
-    console.log("answer", answer)
+
+    // console.log("answer", answer)
     const AnswerComponent = (data) => {
+        // console.log('data', data);
         switch(data.answerType) {
-            case 1: 
+            case 1:
                 return (
                     <div className={classes.questionItem1}>
-                        <FormControl component="fieldset">
-                            <FormLabel component="legend">{data.text}</FormLabel>
-                            <RadioGroup value={answer[data.answerId] === 1 ? "yes" : answer[data.answerId] === 0 ? "no" : -1} onChange={(e)=>handleChange(e, 1, data.answerId)}>
-                                <FormControlLabel value="yes" control={<Radio />} label="Yes" />
-                                <FormControlLabel value="no" control={<Radio />} label="No" />
-                            </RadioGroup>
-                        </FormControl>
+                        <Radio 
+                            checked={answer[data.answerId] === 1 ? true : false}
+                            onChange={(e)=>handleChange(e, 1, data.answerId)}
+                        />
+                        <span>{data.text}</span>
                     </div>
                 )
             case 2: 
@@ -209,13 +209,21 @@ const QAComp = ({
             questionId: questions.actions.answer && questions.actions.answer.body.questionId,
             userQuestionnaireResponseId: questions.actions.answer && questions.actions.answer.body.userQuestionnaireResponseId,
             answers: questionsAnswer && questionsAnswer.map(_answer=>{
+                console.log(answer[_answer.answerId]);
+                let value;
+                if (answer[_answer.answerId] === undefined) {
+                    value = 0;
+                } else {
+                    value = answer[_answer.answerId] !== -1 ? parseInt(answer[_answer.answerId]) : 0
+                }
                 return {
                     answerId: _answer.answerId,
-                    value: answer[_answer.answerId] !== -1 ? answer[_answer.answerId] : -1
+                    value: value
                 }
             })
         }
         const nextPayload = questions.actions.next;
+        console.log(savePayload);
         saveAnswerRequest(savePayload);
         nextQuestionRequest(nextPayload);
     }

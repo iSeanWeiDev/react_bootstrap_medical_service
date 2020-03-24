@@ -124,7 +124,6 @@ function Appbar({
   const goToProfile = () => {
     setAnchorEl(null);
     history.push("/profile");
-    console.log()
   };
 
   const Logout = () => {

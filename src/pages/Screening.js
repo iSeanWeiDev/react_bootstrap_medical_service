@@ -25,10 +25,10 @@ const useStyle = makeStyles(theme => ({
     qacomp: {
         border: "3px solid #1aae9f",
         width: "600px",
-        height: "700px",
+        minHeight: "700px",
         margin: "auto",
         position: "relative",
-        padding: "25px 55px 25px 25px"
+        padding: "25px 55px 55px 25px"
     }
 }));
 function Screening({
@@ -40,10 +40,30 @@ function Screening({
     const history = useHistory();
     const match = useRouteMatch();
     useEffect(()=> {
-        const payload = {
-            "operation":"start",
-            "questionSetTypeName": match.params.type === "aio" ? "PROCESS_AIO" : "PROCESS_ONBOARDING"
+        let payload;
+        switch(match.params.type) {
+            case "aio":
+                payload = {
+                    operation: "start",
+                    questionSetTypeName: "PROCESS_AIO",
+                }
+                break;
+            case "onboarding":
+                payload = {
+                    operation: "start",
+                    questionSetTypeName: "PROCESS_ONBOARDING",
+                }
+                break;
+            case "prescreening":
+                payload = {
+                    operation: "start",
+                    questionSetId: 70,
+                }
+                break;
+            default:
+                payload = {}
         }
+        console.log(payload);
         getScreeningRequest(payload);
     }, []);
 

@@ -138,7 +138,6 @@ function Result({
     useEffect(()=> {
         predictionRequest(history.location.state.actions ? history.location.state.actions.PREDICTION : {url: "/health/amiokay?operation=predict"});
     },[])
-    console.log("eeee", prediction)
     return (
         <div className={classes.result}>
             <div className={classes.title}>
