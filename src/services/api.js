@@ -8,6 +8,8 @@ const Config = {
 const authMiddleWare = (api, payload, method, url) => {
   api.setHeader('Authorization', localStorage.getItem('access_token'))
 
+  console.log('authmiddleware', localStorage.getItem('access_token'));
+
   if(method === 'get') {
     return api.get(url, payload).then(res1=>{
       if(res1.data.message === "Provide a valid token.") {
@@ -56,6 +58,8 @@ const create = (baseURL = Config.API_URL) => {
   // auth
   const postSignin = payload => api.post('/auth/login', payload);
   const postSingup = payload => api.post('/auth/create', payload);
+  const getUserInfo = () => authMiddleWare(api, null, 'get', '/userinfo');
+
 
   // get profile
   const getProfile = () => authMiddleWare(api, null, 'get', '/health/profile');
@@ -71,6 +75,7 @@ const create = (baseURL = Config.API_URL) => {
   return {
     postSignin,
     postSingup,
+    getUserInfo,
 
     getProfile,
     editProfile,

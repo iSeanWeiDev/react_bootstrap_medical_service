@@ -85,7 +85,7 @@ function Singup({
             localStorage.setItem('refresh_token', signupResponse.response.refresh_token);
 
             localStorage.setItem('username', identifier);
-            history.push("/")
+            history.push("/screening/onboarding")
         } else {
             setResponseMsg(signupResponse.message);
             setLoading(false);
@@ -159,7 +159,7 @@ function Singup({
         } else {
             setLoading(true);
             const payload = {
-                email, identifier, password, package: 1, inviteCode
+                email, identifier, password, package: 11, inviteCode
             }
             postSignup(payload);
         }

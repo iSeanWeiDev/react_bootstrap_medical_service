@@ -1,24 +1,40 @@
-import { put } from 'redux-saga/effects'
-import AuthActions from '../actions/auth'
+import { put, call } from 'redux-saga/effects';
+import AuthActions from '../actions/auth';
+import { history } from '../reducers';
 
 //signin
 export function* signinRequest(api, action) {
   const { payload } = action;
-  const response = yield api.postSignin(payload);
-  if(response.ok) {
-    yield put(AuthActions.signinSuccess(response.data))
+  // send signin post request
+  const signInResponse = yield api.postSignin(payload);
+  if(signInResponse.ok) {
+    // render data to signin success
+    yield put(AuthActions.signinSuccess(signInResponse.data))
+    // set the access token to loacal storage
+    yield localStorage.setItem('access_token', signInResponse.data.response.access_token);
+
+    // Send get Userinfo request
+    const getUserInfoResponse = yield api.getUserInfo();
+    // Handle getUserInfoResponse
+    if (getUserInfoResponse.ok && !getUserInfoResponse.data.response.onboarded) {
+      yield call(history.push, '/screening/onboarding');
+    } else {
+      yield call(history.push, '/');
+    }
   } else {
-    yield put(AuthActions.signinFailure(response.data))
+    // render data to signin failure
+    yield put(AuthActions.signinFailure(signInResponse.data))
   }
 }
 
 //signup
 export function* signupRequest(api, action) {
   const { payload } = action;
-  const response = yield api.postSingup(payload);
-  if(response.ok) {
-    yield put(AuthActions.signupSuccess(response.data))
+  const signUpResponse = yield api.postSingup(payload);
+  if(signUpResponse.ok) {
+    yield put(AuthActions.signupSuccess(signUpResponse.data))
   } else {
-    yield put(AuthActions.signupFailure(response.data))
+    yield put(AuthActions.signupFailure(signUpResponse.data))
   }
 }
+
