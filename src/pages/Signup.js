@@ -80,6 +80,7 @@ function Singup({
     const [responseMsg, setResponseMsg] = useState("");
 
     useEffect(() => {
+        
         if(signupResponse.status === "success") {
             localStorage.setItem('access_token', signupResponse.response.access_token);
             localStorage.setItem('refresh_token', signupResponse.response.refresh_token);

@@ -24,6 +24,9 @@ const { Types, Creators } = createActions({
   signupRequest: ['payload'],
   signupSuccess: ['response'],
   signupFailure: ['response'],
+
+  // // logout
+  logoutRequest: null,
 })
 
 export const AuthTypes = Types

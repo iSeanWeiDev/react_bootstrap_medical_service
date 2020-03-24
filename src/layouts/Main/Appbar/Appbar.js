@@ -13,6 +13,7 @@ import IconButton from '@material-ui/core/IconButton';
 import { AccountCircle } from '@material-ui/icons';
 import { connect } from 'react-redux'
 import AppActions from '../../../actions/app';
+import AuthActions from '../../../actions/auth';
 
 const useStyles = makeStyles(theme => ({
   grow: {
@@ -103,7 +104,9 @@ const StyledToolbar = withStyles(theme => ({
 function Appbar({
   isAuthenticated,
   clearRequest,
+  logoutRequest,
 }) {
+  console.log(isAuthenticated);
   const classes = useStyles();
   const history = useHistory();
   const [anchorEl, setAnchorEl] = React.useState(null);
@@ -128,11 +131,12 @@ function Appbar({
 
   const Logout = () => {
     setAnchorEl(null);
+    clearRequest();
+    logoutRequest();
     localStorage.removeItem("access_token");
     localStorage.removeItem("refresh_token");
     localStorage.removeItem("username");
-    clearRequest();
-    history.push("/login")
+    history.push('/');
   };
 
   return (
@@ -150,7 +154,8 @@ function Appbar({
           <div className={classes.sectionDesktop}>
             <div className={classes.accountContainer}>
                 <span className={classes.accountSpan}>
-                  {isAuthenticated ? localStorage.getItem("username") : "Login or Signup"}
+                  {/* {isAuthenticated ? localStorage.getItem("username") : "Login or Signup"} */}
+                  {isAuthenticated ? "Welcome " : "Login or Signup"}
                 </span>
                 <IconButton
                   aria-label="account of current user"
@@ -188,8 +193,13 @@ function Appbar({
   );
 }
 
-const mapDispatchToProps = dispatch => ({
-  clearRequest: () => dispatch(AppActions.clearRequest())
+const mapStateToProps = state => ({
+  isAuthenticated: state.app.authenticated
 })
 
-export default connect(null, mapDispatchToProps)(Appbar);
+const mapDispatchToProps = dispatch => ({
+  clearRequest: () => dispatch(AppActions.clearRequest()),
+  logoutRequest: () => dispatch(AuthActions.logoutRequest()),
+})
+
+export default connect(mapStateToProps, mapDispatchToProps)(Appbar);

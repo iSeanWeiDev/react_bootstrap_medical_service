@@ -8,9 +8,11 @@ const initialState = Immutable({
   authenticated: false,
 })
 
+const appAuthenticated = (state, action) => state.merge({...state, authenticated: true});
 // clear all reqest
 const clearRequest = (state, action) => state.merge({ ...state, ...initialState })
 
 export const reducer = createReducer(initialState, {
   [AppTypes.CLEAR_REQUEST]: clearRequest,
+  [AppTypes.APP_AUTHENTICATED]: appAuthenticated,
 })

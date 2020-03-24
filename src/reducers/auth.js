@@ -1,6 +1,6 @@
 import { createReducer } from 'reduxsauce'
 import Immutable from 'seamless-immutable'
-import { AuthTypes } from '../actions/auth'
+import { AuthTypes } from '../actions/auth';
 
 const initialState = Immutable({
   status: "",
@@ -47,6 +47,9 @@ const signupFailure = (state, action) => {
   })
 }
 
+// logout
+const logoutRequest = (state, action) => state.merge({ ...state, ...initialState })
+
 export const reducer = createReducer(initialState, {
   //signin
   [AuthTypes.SIGNIN_REQUEST]: signinRequest,
@@ -57,4 +60,7 @@ export const reducer = createReducer(initialState, {
   [AuthTypes.SIGNUP_REQUEST]: signupRequest,
   [AuthTypes.SIGNUP_SUCCESS]: signupSuccess,
   [AuthTypes.SIGNUP_FAILURE]: signupFailure,
+
+  // logout
+  [AuthTypes.LOGOUT_REQUEST]: logoutRequest,
 })

@@ -11,6 +11,7 @@
 import { createActions } from 'reduxsauce'
 
 const { Types, Creators } = createActions({
+  appAuthenticated: null,
   // Clear all caches
   clearRequest: null,
 })
