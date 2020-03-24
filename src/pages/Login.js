@@ -70,7 +70,6 @@ function Login({
     const [responseMsg, setResponseMsg] = useState("");
 
     useEffect(() => {
-        console.log(signinResponse)
         if(signinResponse.status === "success") {
             // localStorage.setItem('access_token', signinResponse.response.access_token);
             // localStorage.setItem('refresh_token', signinResponse.response.refresh_token);

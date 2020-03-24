@@ -96,7 +96,7 @@ const QAComp = ({
     nextQuestionRequest,
     previousQuestionRequest,
 }) => {
-    console.log('questions', questions)
+    // console.log('questions', questions)
     const classes = useStyles();
     const tooltipText = `help text`;
     const [answer, setAnswer] = useState({});
@@ -209,7 +209,7 @@ const QAComp = ({
             questionId: questions.actions.answer && questions.actions.answer.body.questionId,
             userQuestionnaireResponseId: questions.actions.answer && questions.actions.answer.body.userQuestionnaireResponseId,
             answers: questionsAnswer && questionsAnswer.map(_answer=>{
-                console.log(answer[_answer.answerId]);
+                // console.log(answer[_answer.answerId]);
                 let value;
                 if (answer[_answer.answerId] === undefined) {
                     value = 0;
@@ -223,7 +223,7 @@ const QAComp = ({
             })
         }
         const nextPayload = questions.actions.next;
-        console.log(savePayload);
+        // console.log(savePayload);
         saveAnswerRequest(savePayload);
         nextQuestionRequest(nextPayload);
     }

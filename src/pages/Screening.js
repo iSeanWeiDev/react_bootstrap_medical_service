@@ -36,6 +36,7 @@ function Screening({
     screeningData,
     isDone,
 }) {
+    // console.log(screeningData)
     const classes = useStyle();
     const history = useHistory();
     const match = useRouteMatch();
@@ -63,7 +64,7 @@ function Screening({
             default:
                 payload = {}
         }
-        console.log(payload);
+        // console.log(payload);
         getScreeningRequest(payload);
     }, []);
 

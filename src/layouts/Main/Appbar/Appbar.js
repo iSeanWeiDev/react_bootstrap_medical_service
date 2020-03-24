@@ -106,7 +106,6 @@ function Appbar({
   clearRequest,
   logoutRequest,
 }) {
-  console.log(isAuthenticated);
   const classes = useStyles();
   const history = useHistory();
   const [anchorEl, setAnchorEl] = React.useState(null);
