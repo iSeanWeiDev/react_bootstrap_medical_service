@@ -96,7 +96,7 @@ function Profile({
             setRiskFactors(profileData.response[4])
         }
     }, [profileData])
-
+    console.log(profileData);
     return (
         <div className={classes.profile}>
              <div className={classes.title}>
@@ -108,8 +108,36 @@ function Profile({
                 {!isDone ? (
                     <LoadingSpinner />
                 ) : (
+                    
                     <div className={classes.profileContent}>
-                        <Grid container className={classes.gridRoot} spacing={1}>
+                        <Grid container className={classes.gridRoot} spacing={1} hidden>
+                            <Grid item xs={4}>
+                                <Profilecard value="97.0" text="02 Saturation(%)" />
+                            </Grid>
+                            <Grid item xs={4}>
+                                <Profilecard value="87" text="Heart Rate (bpm)" />
+                            </Grid>
+                            <Grid item xs={4}>
+                                <Profilecard value="3/6" text="COPD Assessment" />
+                            </Grid>
+                        </Grid>
+                        {profileData.response.map((element, index) => {
+                            return (
+                                <div className={classes.profileSection} key={index}>
+                                    <h2>
+                                        {element.title} 
+                                        <EditIcon 
+                                            className={classes.editIcon}
+                                            // onClick={()=>history.push({
+                                            // pathname: '/editprofile',
+                                            // state: healthProfile
+                                            // })} 
+                                        />
+                                    </h2>
+                                </div>
+                            )
+                        })}
+                        {/* <Grid container className={classes.gridRoot} spacing={1} hidden>
                             <Grid item xs={4}>
                                 <Profilecard value="97.0" text="02 Saturation(%)" />
                             </Grid>
@@ -121,7 +149,7 @@ function Profile({
                             </Grid>
                         </Grid>
                         <div className={classes.profileSection}>
-                            <h1>Profile <EditIcon 
+                            <h1>Health Profile <EditIcon 
                                 className={classes.editIcon}
                                 onClick={()=>history.push({
                                     pathname: '/editprofile',
@@ -241,8 +269,8 @@ function Profile({
                                 </div>
                             ))}
                         </div>
-                        <div className={classes.medicationsSection}>
-                            <h1>Risk Factors <EditIcon
+                        <div className={classes.medicationsSection}> */}
+                            {/* <h1>Risk Factors <EditIcon
                                 className={classes.editIcon}
                                 onClick={()=>history.push({
                                 pathname: '/editprofile',
@@ -260,7 +288,7 @@ function Profile({
                                     }
                                 </div>
                             ))}
-                        </div>
+                        </div> */}
                     </div>
                 )}
             </div>
