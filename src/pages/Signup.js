@@ -7,6 +7,7 @@ import TextField from '@material-ui/core/TextField';
 import Button from '../components/Button';
 import { connect } from 'react-redux'
 import AuthActions from '../actions/auth';
+import ResultActions from '../actions/result';
 
 const useStyle = makeStyles(theme => ({
     signup: {
@@ -56,6 +57,7 @@ const useStyle = makeStyles(theme => ({
 
 function Singup({
     postSignup,
+    setScreeningType,
     signupResponse,
 }) {
     const classes = useStyle();
@@ -86,6 +88,7 @@ function Singup({
             localStorage.setItem('refresh_token', signupResponse.response.refresh_token);
 
             localStorage.setItem('username', identifier);
+            setScreeningType('onboarding')
             history.push("/screening/onboarding")
         } else {
             setResponseMsg(signupResponse.message);
@@ -254,7 +257,8 @@ const mapStateToProps = state => ({
 })
 
 const mapDispatchToProps = dispatch => ({
-    postSignup: payload => dispatch(AuthActions.signupRequest(payload))
+    postSignup: payload => dispatch(AuthActions.signupRequest(payload)),
+    setScreeningType: type => dispatch(ResultActions.setScreeningRequest(type))
 })
   
 export default connect(mapStateToProps, mapDispatchToProps)(Singup);

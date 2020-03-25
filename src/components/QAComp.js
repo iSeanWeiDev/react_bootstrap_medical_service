@@ -178,6 +178,7 @@ const QAComp = ({
                     </div>
                 )
             case 4:
+                console.log("www", answer[data.answerId] !== -1 ? answer[data.answerId] : 0)
                 return (
                     <div className={classes.questionItem4}>
                         <FormControl variant="filled" className={classes.formControl}>
