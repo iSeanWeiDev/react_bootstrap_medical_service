@@ -89,7 +89,8 @@ function Startup({
                             <Button
                                 style={classes.btnGetStarted} 
                                 title="Get Started" 
-                                onPress={()=>isAuthenticated ? history.push("/home") : history.push("/login")} authButton={false} 
+                                onPress={()=>isAuthenticated ? history.push("/home") : history.push("/login")} 
+                                authButton={false} 
                             />
                         </div>
                     </div>

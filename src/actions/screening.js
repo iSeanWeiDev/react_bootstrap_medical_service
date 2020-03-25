@@ -9,7 +9,6 @@ const { Types, Creators } = createActions({
   getScreeningFailure: ['response'],
 
   // Question
-
   nextQuestionRequest: ['payload'],
   nextQuestionSuccess: ['response'],
   nextQuestionFailure: ['response'],

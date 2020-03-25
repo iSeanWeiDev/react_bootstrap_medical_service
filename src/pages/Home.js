@@ -3,6 +3,8 @@ import { makeStyles } from "@material-ui/core/styles";
 import { Grid } from "@material-ui/core";
 import Button from '../components/Button';
 import { useHistory } from 'react-router-dom';
+import { connect } from 'react-redux';
+import ResultActions from '../actions/result';
 
 const useStyle = makeStyles(theme => ({
     root: {
@@ -138,10 +140,18 @@ const useStyle = makeStyles(theme => ({
     },
 }));
 function Home({
-    
+    setScreeningType,
 }) {
     const classes = useStyle();
     const history = useHistory();
+    const handleMoveToPrescreening = () => {
+        setScreeningType('prescreening');
+        history.push("/screening/prescreening");
+    }
+    const handleMoveToSymptoms = () => {
+        setScreeningType('symptoms');
+        history.push("/screening/aio");
+    }
     return (
         <div className={classes.home}>
             <Grid container className={classes.root} spacing={1}>
@@ -179,7 +189,7 @@ function Home({
                                 <Grid item xs={6}>
                                     <div 
                                         className={classes.helpSection}
-                                        onClick={()=>history.push("/screening/prescreening")} 
+                                        onClick={handleMoveToPrescreening} 
                                     >
                                         <img
                                             style={{paddingRight: "15px", width: "47px", height: '40px',}}  
@@ -196,7 +206,7 @@ function Home({
                                     <div 
                                         className={classes.helpSection}
                                         style={{float: 'right'}}
-                                        onClick={()=>history.push("/screening/aio")} 
+                                        onClick={handleMoveToSymptoms} 
                                     >
                                         <img
                                             style={{paddingRight: "15px", width: "47px", height: '40px',}}  
@@ -254,4 +264,9 @@ function Home({
         </div>
     )
 }
-export default Home;
+
+const mapDispatchToProps = dispatch => ({
+    setScreeningType: type => dispatch(ResultActions.setScreeningRequest(type))
+})
+
+export default connect(null, mapDispatchToProps)(Home);

@@ -1,15 +1,14 @@
-import React, {useEffect} from 'react';
+import React, {useEffect, useState} from 'react';
 import { makeStyles } from "@material-ui/core/styles";
 import { withRouter } from 'react-router-dom';
 import HelpIcon from '@material-ui/icons/Help';
 import Button from '../components/Button';
 import Tooltip from '@material-ui/core/Tooltip';
-import { connect } from 'react-redux'
+import { connect } from 'react-redux';
 import ResultActions from '../actions/result';
 import LoadingSpinner from '../components/LoadingSpinner';
 import { equals, isEmpty, isNil } from 'ramda'
 import { CircularProgressbar, buildStyles } from 'react-circular-progressbar';
-import { useRouteMatch, useHistory } from 'react-router-dom';
 
 import 'react-circular-progressbar/dist/styles.css';
 
@@ -69,6 +68,15 @@ const useStyle = makeStyles(theme => ({
         width: '100%',
         padding: '10px',
     },
+    contentSection: {
+        width: '100%',
+        padding: '10px',
+        fontFamily: "'Roboto', 'sans-serif'",
+        fontSize: "18px",
+        color: "#293845",
+        fontWeight: 400,
+        textAlign: "center",
+    },
     mainContentSection: {
         display: "flex",
         alignItems: "center",
@@ -102,6 +110,13 @@ const useStyle = makeStyles(theme => ({
         fontSize: '18px',
         color: '#2c3a47',
     },
+    contentBottomSpan: {
+        fontFamily: "'Roboto', 'sans-serif'",
+        fontSize: "17px",
+        color: "#293845",
+        fontWeight: 300,
+        marginTop: '40px',
+    },
     footer: {
         position: 'absolute',
         bottom: '0px',
@@ -133,100 +148,175 @@ function Result({
     getResultRequest,
     isDone,
     resultData,
+    screeningType,
 }) {
-    console.log(history);
     useEffect(() => {
         const payload = history.location.state.actions.PREDICTION;
         getResultRequest(payload)
     }, [])
-    
+
     const classes = useStyle();
     const tooltipText = `help text`;
-    console.log(resultData);
-    return (
-        <div className={classes.result}>
-            <div className={classes.title}>
-                <span>{resultData.title}</span>
-            </div>
-            <div className={classes.resultContainer}>
-            {!isDone ? (
-               <LoadingSpinner /> 
-            ) : (
-                <div>
-                    <div className={classes.containerTitle}>
-                        <img
-                            className={classes.containerTitleImg} 
-                            src={`/assets/icons/${resultData.icon}.png`} 
-                            alt="iconMedicine" 
-                        />
-                        <span className={classes.containerTitleSpan}>
-                            {resultData.text}
-                        </span>
-                        <Tooltip
-                            title={tooltipText}>
-                            <HelpIcon className={classes.helpIcon} />
-                        </Tooltip>
+    console.log(screeningType);
+    switch(screeningType) {
+        case "symptoms":
+            return (
+                <div className={classes.result}>
+                    <div className={classes.title}>
+                        <span>{resultData.title}</span>
                     </div>
-                    <div className={classes.containerContent}>
-                        <div className={classes.mainContentSection}>
-                            <CircularProgressbar 
-                                className={classes.contentImg}
-                                value={resultData.primary.value} 
-                                text={`${resultData.primary.donutText}`} 
-                                styles={buildStyles({
-                                    rotation: 1,
-                                    strokeLinecap: 'butt',
-                                    fontWeight: 900,
-                                    pathColor: `${resultData.primary.donutColor}`,
-                                    textColor: '#293845',
-                                    trailColor: '#f88',
-                                    backgroundColor: '#3e98c7',
-                                })} 
-                            />
-                            <span className={classes.contentSpan}>
-                                {resultData.primary.text}
-                            </span>
-                        </div>
-                        {resultData.secondary.map((element, index) => (
-                            <div className={classes.secondaryContentSection} key={index}>
-                                <CircularProgressbar 
-                                    className={classes.contentImg}
-                                    value={element.value} 
-                                    text={`${element.donutText}`} 
-                                    styles={buildStyles({
-                                        rotation: 1,
-                                        strokeLinecap: 'butt',
-                                        fontWeight: 900,
-                                        pathColor: `${element.donutColor}`,
-                                        textColor: '#293845',
-                                        trailColor: '#f88',
-                                        backgroundColor: '#3e98c7',
-                                    })} 
-                                    
+                    <div className={classes.resultContainer}>
+                    {!isDone ? (
+                       <LoadingSpinner /> 
+                    ) : (
+                        <div>
+                            <div className={classes.containerTitle}>
+                                <img
+                                    className={classes.containerTitleImg} 
+                                    src={`/assets/icons/${resultData.icon}.png`} 
+                                    alt="iconMedicine" 
                                 />
-                                <span className={classes.contentSpan}>
-                                    {element.text}
+                                <span className={classes.containerTitleSpan}>
+                                    {resultData.text}
                                 </span>
+                                <Tooltip
+                                    title={tooltipText}>
+                                    <HelpIcon className={classes.helpIcon} />
+                                </Tooltip>
                             </div>
-                        ))}
-                    </div>
-                    <div className={classes.footer}>
-                        <Button 
-                            style={classes.btnComplete}
-                            title="Complete" 
-                            onPress={()=>history.push("/")} 
-                            authButton={false} 
-                        />
-                    </div>
+                            <div className={classes.containerContent}>
+                                <div className={classes.mainContentSection}>
+                                    <CircularProgressbar 
+                                        className={classes.contentImg}
+                                        value={resultData.primary.value} 
+                                        text={`${resultData.primary.donutText}`} 
+                                        styles={buildStyles({
+                                            rotation: 1,
+                                            strokeLinecap: 'butt',
+                                            fontWeight: 900,
+                                            pathColor: `${resultData.primary.donutColor}`,
+                                            textColor: '#293845',
+                                            trailColor: '#f88',
+                                            backgroundColor: '#3e98c7',
+                                        })} 
+                                    />
+                                    <span className={classes.contentSpan}>
+                                        {resultData.primary.text}
+                                    </span>
+                                </div>
+                                {resultData.secondary.map((element, index) => (
+                                    <div className={classes.secondaryContentSection} key={index}>
+                                        <CircularProgressbar 
+                                            className={classes.contentImg}
+                                            value={element.value} 
+                                            text={`${element.donutText}`} 
+                                            styles={buildStyles({
+                                                rotation: 1,
+                                                strokeLinecap: 'butt',
+                                                fontWeight: 900,
+                                                pathColor: `${element.donutColor}`,
+                                                textColor: '#293845',
+                                                trailColor: '#f88',
+                                                backgroundColor: '#3e98c7',
+                                            })} 
+                                            
+                                        />
+                                        <span className={classes.contentSpan}>
+                                            {element.text}
+                                        </span>
+                                    </div>
+                                ))}
+                            </div>
+                            <div className={classes.footer}>
+                                <Button 
+                                    style={classes.btnComplete}
+                                    title="Complete" 
+                                    onPress={()=>history.push("/")} 
+                                    authButton={false} 
+                                />
+                            </div>
+                        </div>
+                    )}
+                    </div> 
                 </div>
-            )}
-            </div> 
-        </div>
-    )
+            )
+        case "prescreening":
+            console.log(resultData);
+            return (
+                <div className={classes.result}>
+                    <div className={classes.title}>
+                        <span>Pre-Screening Result</span>
+                    </div>
+                    <div className={classes.resultContainer}>
+                    {!isDone ? (
+                    <LoadingSpinner /> 
+                    ) : (
+                        <div>
+                            <div className={classes.containerTitle}>
+                                <img
+                                    className={classes.containerTitleImg} 
+                                    src={`/assets/icons/${resultData.response.icon}.png`} 
+                                    alt="iconMedicine" 
+                                />
+                                <span className={classes.containerTitleSpan}>
+                                    {resultData.response.text}
+                                </span>
+                                <Tooltip
+                                    title={tooltipText}>
+                                    <HelpIcon className={classes.helpIcon} />
+                                </Tooltip>
+                            </div>
+                            <div className={classes.containerContent}>
+                                <div className={classes.contentSection}>
+                                    <span>
+                                       {resultData.response.subText}
+                                    </span> 
+                                </div>
+                                <div className={classes.mainContentSection}>
+                                    <CircularProgressbar 
+                                        className={classes.contentImg}
+                                        value={resultData.response.primary.value} 
+                                        text={`${resultData.response.primary.donutText}`} 
+                                        styles={buildStyles({
+                                            rotation: 1,
+                                            strokeLinecap: 'butt',
+                                            fontWeight: 900,
+                                            pathColor: `${resultData.response.primary.donutColor}`,
+                                            textColor: '#293845',
+                                            trailColor: '#f88',
+                                            backgroundColor: '#3e98c7',
+                                        })} 
+                                    />
+                                    <span className={classes.contentSpan}>
+                                        {resultData.response.primary.text}
+                                    </span>
+                                </div>
+                                <div className={classes.contentBottomSection}>
+                                    <span className={classes.contentBottomSpan}>
+                                        {resultData.response.additionalInfo}
+                                    </span>
+                                </div>
+                            </div>
+                            <div className={classes.footer}>
+                                <Button 
+                                    style={classes.btnComplete}
+                                    title="Complete" 
+                                    onPress={()=>history.push("/")} 
+                                    authButton={false} 
+                                />
+                            </div>
+                        </div>
+                    )}
+                    </div> 
+                </div>
+            )
+    }
+    
 }
 
 
 const mapStateToProps = state => ({
+    screeningType: state.result.type,
     resultData: state.result.data,
     isDone: equals(state.result.status, 'done')
 })
