@@ -130,7 +130,7 @@ const QAComp = ({
             case 4: 
                 setAnswer({
                     ...answer,
-                    [key]: event.target.value ? 1 : 0
+                    [key]: event.target.value
                 });
                 break;
             default: 
@@ -178,7 +178,6 @@ const QAComp = ({
                     </div>
                 )
             case 4:
-                console.log("www", answer[data.answerId] !== -1 ? answer[data.answerId] : 0)
                 return (
                     <div className={classes.questionItem4}>
                         <FormControl variant="filled" className={classes.formControl}>
@@ -188,11 +187,11 @@ const QAComp = ({
                             <Select
                                 labelId="demo-simple-select-filled-label"
                                 id="demo-simple-select-filled"
-                                value={answer[data.answerId] !== -1 ? answer[data.answerId] : ""}
+                                value={answer[data.answerId] && answer[data.answerId] !== -1 ? answer[data.answerId] : ""}
                                 onChange={(e)=> handleChange(e, 4, data.answerId)}
                             >
                                 {data.attribute.data.map(attr => (
-                                    <MenuItem value={parseInt(attr.value)} key={attr.value}>
+                                    <MenuItem value={attr.value} key={attr.value}>
                                         {attr.text}
                                     </MenuItem>
                                 ))}
@@ -217,7 +216,7 @@ const QAComp = ({
             questionId: questions.actions.answer && questions.actions.answer.body.questionId,
             userQuestionnaireResponseId: questions.actions.answer && questions.actions.answer.body.userQuestionnaireResponseId,
             answers: questionsAnswer && questionsAnswer.map(_answer=>{
-                // console.log(answer[_answer.answerId]);
+                console.log(answer[_answer.answerId]);
                 let value;
                 if (answer[_answer.answerId] === undefined) {
                     value = 0;
