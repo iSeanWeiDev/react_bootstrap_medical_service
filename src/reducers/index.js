@@ -10,6 +10,7 @@ const reducers = combineReducers({
   auth: require('./auth').reducer,
   profile: require('./profile').reducer,
   screening: require('./screening').reducer,
+  result: require('./result').reducer,
 })
 
 const store = configureStore(initialState, reducers, history)

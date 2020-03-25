@@ -133,12 +133,11 @@ function Result({
     history,
     match
 }) {
-    console.log(history);
     const classes = useStyle();
     const tooltipText = `help text`;
     useEffect(()=> {
-        // predictionRequest(history.location.state.actions ? history.location.state.actions.PREDICTION : {url: "/health/amiokay?operation=predict"});
-        predictionRequest({url: history.location.state.actions.PREDICTION.url });
+        predictionRequest(history.location.state.actions ? history.location.state.actions.PREDICTION : {url: "/health/amiokay?operation=predict"});
+        // predictionRequest({url: history.location.state.actions.PREDICTION.url });
     },[])
     return (
         <div className={classes.result}>

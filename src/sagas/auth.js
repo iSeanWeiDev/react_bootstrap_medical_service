@@ -33,6 +33,7 @@ export function* signinRequest(api, action) {
 //signup
 export function* signupRequest(api, action) {
   const { payload } = action;
+  console.log(payload);
   const signUpResponse = yield api.postSingup(payload);
   if(signUpResponse.ok) {
     yield put(AppActions.appAuthenticated());

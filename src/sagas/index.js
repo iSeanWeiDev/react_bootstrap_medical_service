@@ -4,6 +4,7 @@ import API from '../services/api'
 import { AuthTypes } from '../actions/auth'
 import { ProfileTypes } from '../actions/profile'
 import { ScreeningTypes } from '../actions/screening'
+import { ResultTypes } from '../actions/result'
 
 import {
   signinRequest,
@@ -22,6 +23,10 @@ import {
   saveAnswerRequest,
   predictionRequest
 } from './screening'
+
+import {
+  getResultRequest,
+} from './result'
 
 const api = API.create();
 
@@ -44,5 +49,7 @@ export default function* root() {
     takeLatest(ScreeningTypes.SAVE_ANSWER_REQUEST, saveAnswerRequest, api),
     takeLatest(ScreeningTypes.PREDICTION_REQUEST, predictionRequest, api),
 
+    // ------------------------- Screening Sagas
+    takeLatest(ResultTypes.GET_RESULT_REQUEST, getResultRequest, api),
   ])
 }

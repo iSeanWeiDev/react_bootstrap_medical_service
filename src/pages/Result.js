@@ -1,9 +1,17 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import { makeStyles } from "@material-ui/core/styles";
 import { withRouter } from 'react-router-dom';
 import HelpIcon from '@material-ui/icons/Help';
 import Button from '../components/Button';
 import Tooltip from '@material-ui/core/Tooltip';
+import { connect } from 'react-redux'
+import ResultActions from '../actions/result';
+import LoadingSpinner from '../components/LoadingSpinner';
+import { equals, isEmpty, isNil } from 'ramda'
+import { CircularProgressbar, buildStyles } from 'react-circular-progressbar';
+import { useRouteMatch, useHistory } from 'react-router-dom';
+
+import 'react-circular-progressbar/dist/styles.css';
 
 const useStyle = makeStyles(theme => ({
     result: {
@@ -24,10 +32,10 @@ const useStyle = makeStyles(theme => ({
     resultContainer: {
         border: "3px solid #1aae9f",
         width: "600px",
-        height: "700px",
+        minHeight: "700px",
         margin: "auto",
         position: "relative",
-        padding: "25px",
+        padding: "25px 25px 80px 25px",
         flex: 1,
     },
     containerTitle: {
@@ -41,10 +49,12 @@ const useStyle = makeStyles(theme => ({
         height: '90px',
         float: 'left',
         marginRight: '20px',
+        fontSize: "18px",
+        fontWeight: "bolder",
     },
     containerTitleSpan: {
         fontFamily: "'Roboto', 'sans-serif'",
-        fontSize: "23px",
+        fontSize: "20px",
         color: "#293845",
         fontWeight: 600,
         letterSpacing: "1px",
@@ -98,7 +108,7 @@ const useStyle = makeStyles(theme => ({
         width: "540px",
         left: "25px",
         borderTop: "3px solid #1aae9f",
-        height: "100px",
+        height: "80px",
         display: "flex",
         alignItems: "center",
         justifyContent: "center",
@@ -119,73 +129,110 @@ const useStyle = makeStyles(theme => ({
     
 }));
 function Result({
-    history
+    history,
+    getResultRequest,
+    isDone,
+    resultData,
 }) {
+    console.log(history);
+    useEffect(() => {
+        const payload = history.location.state.actions.PREDICTION;
+        getResultRequest(payload)
+    }, [])
+    
     const classes = useStyle();
     const tooltipText = `help text`;
-
+    console.log(resultData);
     return (
         <div className={classes.result}>
             <div className={classes.title}>
-                <span>Screening Results</span>
+                <span>{resultData.title}</span>
             </div>
             <div className={classes.resultContainer}>
-                <div className={classes.containerTitle}>
-                    <img
-                        className={classes.containerTitleImg} 
-                        src="/assets/imgs/icon-medicine.png" 
-                        alt="iconMedicine" 
-                    />
-                    <span className={classes.containerTitleSpan}>
-                        Iterex Signals: Continue with you usual treatment and check back in 1-2 days
-                    </span>
-                    <Tooltip
-                        title={tooltipText}>
-                        <HelpIcon className={classes.helpIcon} />
-                    </Tooltip>
-                </div>
-                <div className={classes.containerContent}>
-                    <div className={classes.mainContentSection}>
+            {!isDone ? (
+               <LoadingSpinner /> 
+            ) : (
+                <div>
+                    <div className={classes.containerTitle}>
                         <img
-                            className={classes.contentImg} 
-                            src="/assets/imgs/icon-med-low.png" 
-                            alt="iconMedLow" 
+                            className={classes.containerTitleImg} 
+                            src={`/assets/icons/${resultData.icon}.png`} 
+                            alt="iconMedicine" 
                         />
-                        <span className={classes.contentSpan}>
-                            Potential need for <br /> medical attention
+                        <span className={classes.containerTitleSpan}>
+                            {resultData.text}
                         </span>
+                        <Tooltip
+                            title={tooltipText}>
+                            <HelpIcon className={classes.helpIcon} />
+                        </Tooltip>
                     </div>
-                    <div className={classes.secondaryContentSection}>
-                        <img 
-                            className={classes.contentImg}
-                            src="/assets/imgs/icon-low.png" 
-                            alt="iconLow" 
-                        />
-                        <span className={classes.contentSpan}>
-                            Potential respiratory exacerbation
-                        </span>
+                    <div className={classes.containerContent}>
+                        <div className={classes.mainContentSection}>
+                            <CircularProgressbar 
+                                className={classes.contentImg}
+                                value={resultData.primary.value} 
+                                text={`${resultData.primary.donutText}`} 
+                                styles={buildStyles({
+                                    rotation: 1,
+                                    strokeLinecap: 'butt',
+                                    fontWeight: 900,
+                                    pathColor: `${resultData.primary.donutColor}`,
+                                    textColor: '#293845',
+                                    trailColor: '#f88',
+                                    backgroundColor: '#3e98c7',
+                                })} 
+                            />
+                            <span className={classes.contentSpan}>
+                                {resultData.primary.text}
+                            </span>
+                        </div>
+                        {resultData.secondary.map((element, index) => (
+                            <div className={classes.secondaryContentSection} key={index}>
+                                <CircularProgressbar 
+                                    className={classes.contentImg}
+                                    value={element.value} 
+                                    text={`${element.donutText}`} 
+                                    styles={buildStyles({
+                                        rotation: 1,
+                                        strokeLinecap: 'butt',
+                                        fontWeight: 900,
+                                        pathColor: `${element.donutColor}`,
+                                        textColor: '#293845',
+                                        trailColor: '#f88',
+                                        backgroundColor: '#3e98c7',
+                                    })} 
+                                    
+                                />
+                                <span className={classes.contentSpan}>
+                                    {element.text}
+                                </span>
+                            </div>
+                        ))}
                     </div>
-                    <div className={classes.secondaryContentSection}>
-                        <img
-                            className={classes.contentImg} 
-                            src="/assets/imgs/icon-med-low.png" 
-                            alt="iconMedLow" 
+                    <div className={classes.footer}>
+                        <Button 
+                            style={classes.btnComplete}
+                            title="Complete" 
+                            onPress={()=>history.push("/")} 
+                            authButton={false} 
                         />
-                        <span className={classes.contentSpan}>
-                            Severity of your symptoms
-                        </span>
                     </div>
                 </div>
-                <div className={classes.footer}>
-                    <Button 
-                        style={classes.btnComplete}
-                        title="Complete" 
-                        onPress={()=>history.push("/")} 
-                        authButton={false} 
-                    />
-                </div>
-            </div>
+            )}
+            </div> 
         </div>
     )
 }
-export default withRouter(Result);
+
+
+const mapStateToProps = state => ({
+    resultData: state.result.data,
+    isDone: equals(state.result.status, 'done')
+})
+
+const mapDispatchToProps = dispatch => ({
+    getResultRequest: payload =>  dispatch(ResultActions.getResultRequest(payload))
+})
+
+export default connect(mapStateToProps, mapDispatchToProps)(withRouter(Result));

@@ -36,7 +36,6 @@ function Screening({
     screeningData,
     isDone,
 }) {
-    // console.log(screeningData)
     const classes = useStyle();
     const history = useHistory();
     const match = useRouteMatch();

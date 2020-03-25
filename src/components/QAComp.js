@@ -126,6 +126,13 @@ const QAComp = ({
                     [key]: event.target.checked ? 1 : 0
                 });
                 break;
+
+            case 4: 
+                setAnswer({
+                    ...answer,
+                    [key]: event.target.value ? 1 : 0
+                });
+                break;
             default: 
                 setAnswer({
                     ...answer,

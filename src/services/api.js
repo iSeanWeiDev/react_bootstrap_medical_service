@@ -70,6 +70,9 @@ const create = (baseURL = Config.API_URL) => {
   const saveAnswer = payload => authMiddleWare(api, payload, 'post', '/health/answer');
   const prediction = payload => authMiddleWare(api, null, 'get', payload.url);
 
+  // result
+  const getResult = payload => authMiddleWare(api, null, 'get', payload.url);
+
   return {
     postSignin,
     postSingup,
@@ -82,7 +85,9 @@ const create = (baseURL = Config.API_URL) => {
     nextQuestion,
     previousQuestion,
     saveAnswer,
-    prediction
+    prediction,
+
+    getResult
   }
 }
 

@@ -15,7 +15,6 @@ export function* getScreeningRequest(api, action) {
 export function* nextQuestionRequest(api, action) {
   const { payload } = action;
   const response = yield api.nextQuestion(payload);
-  console.log(response);
   if(response.ok) {
     switch(response.data.response.endAction) {
       case "RETURN" : 
@@ -25,7 +24,7 @@ export function* nextQuestionRequest(api, action) {
         yield call(history.push, '/continue', response.data.response)
         break;
       case "PREDICTION" :
-        yield call(history.push, '/continue', response.data.response)
+        yield call(history.push, '/result', response.data.response)
         break;
       case "PREDICTION_OVERRIDE":
         yield call(history.push, '/result', response.data.response)
